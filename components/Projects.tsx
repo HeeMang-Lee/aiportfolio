@@ -37,7 +37,7 @@ const projects = [
     github: "https://github.com/HeeMang-Lee/e-commerce-server",
     stack: ["Spring Boot", "JPA", "Redis", "Redisson"],
     achievements: [
-      { label: "락 대기시간 60분 → 0.15초 (24,000배 개선)", highlight: true },
+      { label: "전체 락 → 주문 단위 락 범위 조정으로 대기시간 60분 → 0.15초", highlight: true },
       { label: "Redis Look-Aside 캐싱, 캐시 히트율 70.8%", highlight: true },
       { label: "N+1 쿼리 99.8% 감소 (1,001회 → 2회)", highlight: true },
     ],

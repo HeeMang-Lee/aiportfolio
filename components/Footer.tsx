@@ -17,10 +17,8 @@ export default function Footer() {
         className="max-w-6xl mx-auto text-center"
       >
         <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
-          이 사이트는 백엔드 개발자가 프론트엔드 경험 없이
-          <br />
-          <span className="text-toss-blue font-medium">Claude Code</span>
-          만으로 제작했습니다.
+          Built with Next.js &middot; Designed &amp; Developed by{" "}
+          <span className="text-toss-blue font-medium">이희망</span>
         </p>
         <p className="text-xs text-gray-400 dark:text-gray-500">
           &copy; 2026 이희망. All rights reserved.
