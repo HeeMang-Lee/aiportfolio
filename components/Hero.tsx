@@ -48,8 +48,7 @@ export default function Hero() {
         </p>
 
         <div className="text-base md:text-lg text-gray-500 dark:text-gray-400 leading-relaxed mb-12 space-y-2">
-          <p>AI한테 코드만 뽑아내는 게 아니라,</p>
-          <p>문제를 정의하고 방향을 잡아주고 결과를 검수합니다.</p>
+          <p>문제를 정의하고, AI에게 방향을 제시하고, 결과를 검수합니다.</p>
         </div>
 
         <div className="flex items-center justify-center gap-4">
