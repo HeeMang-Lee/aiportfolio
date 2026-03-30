@@ -166,7 +166,7 @@ export default function AIExperience() {
         {/* Concrete Use Cases */}
         <FadeInSection>
           <h3 className="text-xl font-semibold mb-3 text-gray-300">
-            구체적으로 이렇게 썼습니다
+            AI를 활용한 구체적 사례
           </h3>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-8">
             어떤 상황에서, 왜, 어떻게
