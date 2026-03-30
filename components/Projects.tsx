@@ -53,12 +53,15 @@ const projects = [
     github: null,
     stack: ["Python", "FastAPI", "TimescaleDB", "KIS API"],
     achievements: [
-      { label: "Claude Code로 테스트 커버리지 0% → 85%", highlight: true },
+      { label: "Claude Code로 테스트 커버리지 0% → 85% (731개)", highlight: true },
+      { label: "구현/테스트 에이전트 분리로 검증 품질 확보", highlight: true },
+      { label: "금융 도메인 전략(버터플라이 등)을 요구사항 문서화 → AI 구현", highlight: true },
     ],
     experiences: [
-      "WebSocket 기반 실시간 시세 수신 + REST API 주문 실행 파이프라인",
-      "API Rate Limiting 및 에러 핸들링 설계",
-      "Claude Code로 테스트 커버리지 0% → 85%",
+      "WebSocket 기반 실시간 시세 수신 파이프라인을 Claude Code와 협업하여 설계 및 구현",
+      "KIS API의 요청 제한(1분 블로킹)으로 테스트 빌드가 실패하는 문제를 Rate Limiting 적용으로 해결",
+      "대표가 설명한 금융 트레이딩 전략을 글로 정리하여 AI에게 요구사항으로 전달, 구현 후 테스트 코드까지 작성하여 정합성 검증",
+      "구현 에이전트와 테스트 에이전트를 분리하여 구현체를 독립적으로 검증할 수 있는 워크플로우 구축",
     ],
   },
 ];
