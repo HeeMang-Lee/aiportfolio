@@ -8,8 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 const navItems = [
   { label: "AI 협업", href: "#ai-experience" },
   { label: "프로젝트", href: "#projects" },
-  { label: "기술 스택", href: "#skills" },
-  { label: "About", href: "#about" },
 ];
 
 export default function Navigation() {

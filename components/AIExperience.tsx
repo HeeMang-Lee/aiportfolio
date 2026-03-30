@@ -90,9 +90,7 @@ export default function AIExperience() {
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             How I Work with AI
           </h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-20 text-lg">
-            AI한테 코드 생성만 시키는 게 아니라, 방향을 잡아주고 결과를 검수합니다.
-          </p>
+          <div className="mb-20" />
         </FadeInSection>
 
         {/* Timeline */}

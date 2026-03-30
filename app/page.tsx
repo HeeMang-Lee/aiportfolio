@@ -5,8 +5,6 @@ import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import AIExperience from "@/components/AIExperience";
 import Projects from "@/components/Projects";
-import Skills from "@/components/Skills";
-import About from "@/components/About";
 import Footer from "@/components/Footer";
 
 function Skeleton() {
@@ -42,8 +40,6 @@ export default function Home() {
       <Hero />
       <AIExperience />
       <Projects />
-      <Skills />
-      <About />
       <Footer />
     </main>
   );
