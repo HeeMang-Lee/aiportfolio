@@ -66,7 +66,7 @@ export default function Hero() {
             <GithubIcon size={20} />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://www.linkedin.com/in/%ED%9D%AC%EB%A7%9D-%EC%9D%B4-777127377/"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-xl border border-gray-200 dark:border-dark-border hover:border-toss-blue/50 hover:bg-toss-blue/5 transition-all"
