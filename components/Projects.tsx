@@ -31,30 +31,6 @@ function FadeInSection({ children, className = "", delay = 0 }: { children: Reac
 
 const projects = [
   {
-    title: "CS25 - AI 기반 CS 학습 플랫폼",
-    period: "2025.06 - 2025.10",
-    link: "https://cs25.co.kr",
-    github: null,
-    stack: [
-      "Spring Boot",
-      "Spring AI",
-      "Redis Streams",
-      "Chroma(VectorDB)",
-      "Brave Search MCP",
-    ],
-    achievements: [
-      { label: "KDT 과정 최우수 프로젝트 선정", highlight: true },
-      { label: "100명+ 실사용자 운영", highlight: false },
-      { label: "처리량 1,300% 향상", highlight: true },
-      { label: "실패율 63% → 4.5%로 개선", highlight: true },
-    ],
-    experiences: [
-      "Redis Streams Consumer Group + dedup Set으로 중복 제거 및 병렬 처리",
-      "Resilience4J 서킷브레이커 + Claude API Fallback으로 무중단 서비스",
-      "K6 부하테스트로 출시 전 문제 사전 발견",
-    ],
-  },
-  {
     title: "이커머스 서버",
     period: "2025.10 - 2025.12",
     link: null,
