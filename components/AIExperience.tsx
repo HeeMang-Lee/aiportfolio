@@ -27,8 +27,14 @@ const timelineItems = [
     title: "모네스트AI 인턴십",
     situation:
       "금융 트레이딩 시스템의 테스트 커버리지가 0%인 상태에서 실서비스 투입이 예정되어 있었다. 주문 실행, 계좌 관리, 포트폴리오 생성, 서비스 간 E2E 테스트까지 필요했고, 인턴 기간 내에 수동으로 처리하기엔 현실적으로 불가능한 규모였다.",
-    whyAI:
-      "테스트 코드 작성은 AI에게 위임하기 적합한 작업이라 판단했다. 다만 처음 맡겼을 때 파라미터 검증, null 체크 같은 의미 없는 테스트가 과도하게 생성되는 문제가 있었다. toss.tech의 서버 테스트 전략 글을 참고하여 \"구현 상세가 아닌 행위를 검증하라\"는 기준을 세우고, \"잔고 부족 시 주문 실패\", \"중복 종목 포트폴리오 생성\" 등 실제 비즈니스 로직을 검증하는 시나리오를 명시하여 AI에게 재지시했다.",
+    whyAI: null,
+    whyAINode: (
+      <>
+        테스트 코드 작성은 AI에게 위임하기 적합한 작업이라 판단했다. 다만 처음 맡겼을 때 파라미터 검증, null 체크 같은 의미 없는 테스트가 과도하게 생성되는 문제가 있었다.{" "}
+        <a href="https://toss.tech/article/test-strategy-server" target="_blank" rel="noopener noreferrer" className="text-toss-blue underline underline-offset-2 hover:text-toss-blue-light transition-colors">toss.tech의 서버 테스트 전략 글</a>
+        을 참고하여 &ldquo;구현 상세가 아닌 행위를 검증하라&rdquo;는 기준을 세우고, &ldquo;잔고 부족 시 주문 실패&rdquo;, &ldquo;중복 종목 포트폴리오 생성&rdquo; 등 실제 비즈니스 로직을 검증하는 시나리오를 명시하여 AI에게 재지시했다.
+      </>
+    ),
     result:
       "커버리지 0%에서 85%까지 달성(731개 테스트 케이스). AI의 산출물을 그대로 사용한 것이 아니라 검수, 방향 수정, 재생성 사이클을 반복하며 품질을 관리한 결과다.",
     tags: ["실무", "Claude Code", "테스트자동화"],
@@ -63,8 +69,14 @@ const concreteUseCases = [
     emoji: "🧪",
     title: "AI 산출물을 검수하고 방향을 수정한 경험",
     context: "모네스트AI | 금융 트레이딩 시스템",
-    detail:
-      "AI에게 테스트 작성을 맡겼을 때 파라미터 타입 체크, null 검증 같은 의미 없는 테스트가 대량 생성됐다. toss.tech의 서버 테스트 전략 글을 참고해 \"구현 상세가 아닌 행위를 검증하라\"는 기준을 세우고, \"잔고 부족 시 주문 실패\", \"중복 종목 포트폴리오 생성\" 등 비즈니스 시나리오를 명시하여 재지시했다.",
+    detail: null,
+    detailNode: (
+      <>
+        AI에게 테스트 작성을 맡겼을 때 파라미터 타입 체크, null 검증 같은 의미 없는 테스트가 대량 생성됐다.{" "}
+        <a href="https://toss.tech/article/test-strategy-server" target="_blank" rel="noopener noreferrer" className="text-toss-blue underline underline-offset-2 hover:text-toss-blue-light transition-colors">toss.tech의 서버 테스트 전략 글</a>
+        을 참고해 &ldquo;구현 상세가 아닌 행위를 검증하라&rdquo;는 기준을 세우고, &ldquo;잔고 부족 시 주문 실패&rdquo;, &ldquo;중복 종목 포트폴리오 생성&rdquo; 등 비즈니스 시나리오를 명시하여 재지시했다.
+      </>
+    ),
   },
   {
     emoji: "🏗️",
@@ -134,7 +146,7 @@ export default function AIExperience() {
                         왜 AI를 썼나
                       </p>
                       <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                        {item.whyAI}
+                        {item.whyAINode || item.whyAI}
                       </p>
                     </div>
                     <div>
@@ -181,7 +193,7 @@ export default function AIExperience() {
                     {useCase.context}
                   </p>
                   <p className="text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
-                    {useCase.detail}
+                    {useCase.detailNode || useCase.detail}
                   </p>
                 </div>
               </FadeInSection>
