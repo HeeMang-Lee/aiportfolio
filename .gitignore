@@ -38,3 +38,16 @@ next-env.d.ts
 # IDE
 .idea/
 *.iml
+
+# Claude Code: skills are shared, per-machine settings are not
+.claude/settings.local.json
+.claude/settings.local*.json
+
+# impeccable detector cache
+.impeccable/
+
+# iCloud/Drive duplicate artifacts ("package-lock 2.json" and friends)
+* 2.json
+* 2.js
+* 2.ts
+* 2.tsx
