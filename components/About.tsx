@@ -1,122 +1,70 @@
-"use client";
+import Reveal from "@/components/Reveal";
 
-import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
-import { Award, Copy, Check, Mail } from "lucide-react";
-
-function FadeInSection({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-80px" });
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: "easeOut" }}
-      className={className}
-    >
-      {children}
-    </motion.div>
-  );
-}
+const credentials = [
+  { name: "정보처리기사", year: "2023" },
+  { name: "COS Pro Python 2급", year: "2022" },
+];
 
 export default function About() {
-  const [copied, setCopied] = useState(false);
-
-  const copyEmail = () => {
-    navigator.clipboard.writeText("hemsej018@naver.com");
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
-    <section id="about" className="py-32 px-6">
-      <div className="max-w-6xl mx-auto">
-        <FadeInSection>
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">About Me</h2>
-          <p className="text-gray-500 dark:text-gray-400 mb-16 text-lg">
+    <section id="about" className="border-b border-rule">
+      <div className="mx-auto max-w-page px-6 py-20 md:px-10 md:py-28">
+        <Reveal>
+          <h2 className="text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-[1.2] tracking-[-0.02em] text-ink">
             개발자가 된 이유
-          </p>
-        </FadeInSection>
+          </h2>
+        </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <FadeInSection>
-            <div className="p-8 rounded-2xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card h-full">
-              <div className="text-gray-500 dark:text-gray-400 leading-relaxed space-y-4">
-                <p>
-                  <span className="text-foreground font-medium">
-                    강원대학교 수학과
-                  </span>
-                  를 졸업했다. 수학 전공이 개발에 꽤 도움이 된다.
-                  문제를 쪼개고 논리적으로 접근하는 습관이 거기서 왔다.
-                </p>
-                <p>
-                  처음엔 그냥 코딩을 배워보자는 거였는데,
-                  직접 만든 서비스에 100명 넘는 사용자가 생기고
-                  피드백이 오기 시작하면서 확신이 생겼다.
-                </p>
-                <p className="text-foreground">
-                  내가 만든 게 누군가한테 쓸모가 있다는 감각.
-                  <br />
-                  그게 개발을 계속하고 싶은 이유다.
-                </p>
-              </div>
+        <div className="mt-12 grid gap-10 md:grid-cols-[200px_1fr] md:gap-16">
+          <Reveal>
+            {/* TODO: drop a portrait at public/portrait.jpg (4:5, min 640x800),
+                then replace this block with next/image. Until then the slot
+                holds its space so the layout does not shift on the day it lands. */}
+            <div className="flex aspect-[4/5] w-full max-w-[200px] items-end rounded border border-rule p-3">
+              <span className="text-[11px] font-medium tracking-meta text-meta">
+                사진 자리
+              </span>
             </div>
-          </FadeInSection>
+          </Reveal>
 
-          <div className="space-y-8">
-            <FadeInSection delay={0.1}>
-              <div className="p-8 rounded-2xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card">
-                <div className="flex items-center gap-2 mb-4">
-                  <Award size={20} className="text-toss-blue" />
-                  <h3 className="font-semibold">자격증</h3>
-                </div>
-                <ul className="space-y-3">
-                  <li className="flex items-center justify-between">
-                    <span className="text-sm">정보처리기사</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      2023
-                    </span>
-                  </li>
-                  <li className="flex items-center justify-between">
-                    <span className="text-sm">COS Pro Python 2급</span>
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
-                      2022
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </FadeInSection>
+          <Reveal delay={0.06}>
+            <div className="max-w-measure space-y-6 text-[15px] leading-[1.75] tracking-[-0.005em] text-body">
+              <p>
+                <span className="text-ink">강원대학교 수학과</span>를 졸업했다.
+                수학 전공이 개발에 꽤 도움이 된다. 문제를 쪼개고 논리적으로
+                접근하는 습관이 거기서 왔다.
+              </p>
+              <p>
+                처음엔 그냥 코딩을 배워보자는 거였는데, 직접 만든 서비스에 100명
+                넘는 사용자가 생기고 피드백이 오기 시작하면서 확신이 생겼다.
+              </p>
+              <p className="text-ink">
+                내가 만든 게 누군가한테 쓸모가 있다는 감각. 그게 개발을 계속하고
+                싶은 이유다.
+              </p>
+            </div>
 
-            <FadeInSection delay={0.2}>
-              <div className="p-8 rounded-2xl border border-gray-200 dark:border-dark-border bg-white dark:bg-dark-card">
-                <div className="flex items-center gap-2 mb-4">
-                  <Mail size={20} className="text-toss-blue" />
-                  <h3 className="font-semibold">Contact</h3>
-                </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-500 dark:text-gray-400">
-                    hemsej018@naver.com
-                  </span>
-                  <button
-                    onClick={copyEmail}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-toss-blue/10 text-toss-blue hover:bg-toss-blue/20 transition-colors"
+            {/* The credential list sits under the prose, not beside the portrait:
+                two short columns of unequal height left a visible hole. */}
+            <dl className="mt-10 border-t border-rule pt-5">
+              <dt className="text-[11px] font-medium tracking-meta text-meta">
+                자격증
+              </dt>
+              <dd className="mt-3 flex flex-wrap gap-x-10 gap-y-2">
+                {credentials.map((c) => (
+                  <span
+                    key={c.name}
+                    className="flex items-baseline gap-2.5 text-[13px] text-body"
                   >
-                    {copied ? (
-                      <>
-                        <Check size={12} /> 복사됨
-                      </>
-                    ) : (
-                      <>
-                        <Copy size={12} /> 복사
-                      </>
-                    )}
-                  </button>
-                </div>
-              </div>
-            </FadeInSection>
-          </div>
+                    {c.name}
+                    <span className="font-mono tnum text-[11px] tracking-label text-meta">
+                      {c.year}
+                    </span>
+                  </span>
+                ))}
+              </dd>
+            </dl>
+          </Reveal>
         </div>
       </div>
     </section>

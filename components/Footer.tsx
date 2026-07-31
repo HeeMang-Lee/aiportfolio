@@ -1,29 +1,47 @@
-"use client";
+import { GithubIcon, LinkedinIcon } from "@/components/icons";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+const EMAIL = "hemsej018@naver.com";
 
 export default function Footer() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
-
   return (
-    <footer className="py-16 px-6 border-t border-gray-200 dark:border-dark-border">
-      <motion.div
-        ref={ref}
-        initial={{ opacity: 0 }}
-        animate={isInView ? { opacity: 1 } : {}}
-        transition={{ duration: 0.6 }}
-        className="max-w-6xl mx-auto text-center"
-      >
-        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4 leading-relaxed">
-          Built with Next.js &middot; Designed &amp; Developed by{" "}
-          <span className="text-toss-blue font-medium">이희망</span>
-        </p>
-        <p className="text-xs text-gray-400 dark:text-gray-500">
-          &copy; 2026 이희망. All rights reserved.
-        </p>
-      </motion.div>
+    <footer className="border-t border-rule">
+      <div className="mx-auto flex max-w-page flex-col gap-8 px-6 py-14 md:flex-row md:items-end md:justify-between md:px-10">
+        <div>
+          <p className="text-[15px] font-semibold tracking-[-0.01em] text-ink">
+            이희망
+          </p>
+          <a
+            href={`mailto:${EMAIL}`}
+            className="mt-2 inline-block font-mono text-[13px] tracking-meta text-meta transition-colors hover:text-ink"
+          >
+            {EMAIL}
+          </a>
+        </div>
+
+        <div className="flex items-end gap-6">
+          <a
+            href="https://github.com/HeeMang-Lee"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-meta transition-colors hover:text-ink"
+            aria-label="GitHub"
+          >
+            <GithubIcon size={17} />
+          </a>
+          <a
+            href="https://www.linkedin.com/in/%ED%9D%AC%EB%A7%9D-%EC%9D%B4-777127377/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-meta transition-colors hover:text-ink"
+            aria-label="LinkedIn"
+          >
+            <LinkedinIcon size={17} />
+          </a>
+          <p className="font-mono tnum text-[11px] tracking-label text-meta">
+            2026
+          </p>
+        </div>
+      </div>
     </footer>
   );
 }

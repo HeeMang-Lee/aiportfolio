@@ -3,98 +3,103 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Menu, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+} from "framer-motion";
 
 const navItems = [
+  { label: "소개", href: "#about" },
   { label: "AI 협업", href: "#ai-experience" },
   { label: "프로젝트", href: "#projects" },
+  { label: "기술", href: "#skills" },
 ];
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const { resolvedTheme, setTheme } = useTheme();
+  const reduce = useReducedMotion();
 
-  useEffect(() => {
-    setMounted(true);
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  // Scroll state comes from a motion value, never a scroll event listener.
+  const { scrollY } = useScroll();
+  useMotionValueEvent(scrollY, "change", (v) => setScrolled(v > 24));
+
+  useEffect(() => setMounted(true), []);
 
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-white/80 dark:bg-dark-bg/80 backdrop-blur-xl border-b border-gray-200 dark:border-dark-border"
-          : "bg-transparent"
+    <header
+      className={`fixed inset-x-0 top-0 z-50 bg-paper transition-colors duration-200 ${
+        scrolled ? "border-b border-rule" : "border-b border-transparent"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <a href="#" className="text-lg font-bold text-foreground">
+      <nav className="mx-auto flex h-16 max-w-page items-center justify-between px-6 md:px-10">
+        <a
+          href="#"
+          className="text-[15px] font-semibold tracking-[-0.01em] text-ink"
+        >
           이희망
         </a>
 
-        {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-8">
+        <div className="hidden items-center gap-8 md:flex">
           {navItems.map((item) => (
             <a
               key={item.href}
               href={item.href}
-              className="text-sm text-gray-500 dark:text-gray-400 hover:text-foreground transition-colors"
+              className="text-[13px] text-meta transition-colors hover:text-ink"
             >
               {item.label}
             </a>
           ))}
-          {mounted && (
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-              aria-label="테마 토글"
-            >
-              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
-          )}
+          <ThemeToggle
+            mounted={mounted}
+            resolvedTheme={resolvedTheme}
+            setTheme={setTheme}
+          />
         </div>
 
-        {/* Mobile menu button */}
-        <div className="flex md:hidden items-center gap-2">
-          {mounted && (
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-              aria-label="테마 토글"
-            >
-              {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
-          )}
+        <div className="flex items-center gap-1 md:hidden">
+          <ThemeToggle
+            mounted={mounted}
+            resolvedTheme={resolvedTheme}
+            setTheme={setTheme}
+          />
           <button
-            onClick={() => setMobileOpen(!mobileOpen)}
-            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
-            aria-label="메뉴"
+            type="button"
+            onClick={() => setMobileOpen((v) => !v)}
+            className="p-2 text-ink"
+            aria-label={mobileOpen ? "메뉴 닫기" : "메뉴 열기"}
+            aria-expanded={mobileOpen}
           >
-            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
+            {mobileOpen ? (
+              <X size={18} strokeWidth={1.5} />
+            ) : (
+              <Menu size={18} strokeWidth={1.5} />
+            )}
           </button>
         </div>
-      </div>
+      </nav>
 
-      {/* Mobile menu */}
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {mobileOpen && (
           <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white/95 dark:bg-dark-bg/95 backdrop-blur-xl border-b border-gray-200 dark:border-dark-border"
+            initial={reduce ? false : { height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={reduce ? { opacity: 0 } : { height: 0, opacity: 0 }}
+            transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden border-t border-rule bg-paper md:hidden"
           >
-            <div className="px-6 py-4 flex flex-col gap-4">
+            <div className="mx-auto flex max-w-page flex-col px-6 py-2">
               {navItems.map((item) => (
                 <a
                   key={item.href}
                   href={item.href}
                   onClick={() => setMobileOpen(false)}
-                  className="text-sm text-gray-500 dark:text-gray-400 hover:text-foreground transition-colors"
+                  className="border-b border-rule py-3 text-[15px] text-body last:border-b-0"
                 >
                   {item.label}
                 </a>
@@ -103,6 +108,35 @@ export default function Navigation() {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </header>
+  );
+}
+
+function ThemeToggle({
+  mounted,
+  resolvedTheme,
+  setTheme,
+}: {
+  mounted: boolean;
+  resolvedTheme: string | undefined;
+  setTheme: (t: string) => void;
+}) {
+  // Reserve the box before mount so the nav does not shift when the icon lands.
+  if (!mounted) return <span className="block h-9 w-9" aria-hidden />;
+
+  const isDark = resolvedTheme === "dark";
+  return (
+    <button
+      type="button"
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="p-2 text-meta transition-colors hover:text-ink"
+      aria-label={isDark ? "밝은 테마로 전환" : "어두운 테마로 전환"}
+    >
+      {isDark ? (
+        <Sun size={17} strokeWidth={1.5} />
+      ) : (
+        <Moon size={17} strokeWidth={1.5} />
+      )}
+    </button>
   );
 }
