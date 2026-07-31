@@ -2,55 +2,60 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Tokens are normative and live in DESIGN.md. Light is the default world;
+   .dark swaps values only, never the strategy. */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #fbfbfa;
+  --ink: #16161a;
+  --ink-body: #43434b;
+  --ink-meta: #6e6e78;
+  --rule: #e3e3e0;
+  --rule-strong: #c9c9c4;
+  --accent: #d14424;
+  --accent-hover: #a83519;
+  --selection: rgba(209, 68, 36, 0.16);
 }
 
 .dark {
-  --background: #0a0a0a;
-  --foreground: #ededed;
-}
-
-body {
-  color: var(--foreground);
-  background: var(--background);
+  --paper: #111112;
+  --ink: #f2f2f0;
+  --ink-body: #b4b4bc;
+  --ink-meta: #84848e;
+  --rule: #28282c;
+  --rule-strong: #3d3d43;
+  --accent: #ff6a45;
+  --accent-hover: #ff8a6b;
+  --selection: rgba(255, 106, 69, 0.22);
 }
 
 html {
   scroll-behavior: smooth;
+  /* Nav is 64px; anchored sections must not land underneath it. */
+  scroll-padding-top: 96px;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+body {
+  background: var(--paper);
+  color: var(--ink-body);
 }
 
-/* Skeleton animation */
-@keyframes shimmer {
-  0% {
-    background-position: -200% 0;
-  }
-  100% {
-    background-position: 200% 0;
-  }
+::selection {
+  background: var(--selection);
 }
 
-.skeleton {
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.05) 25%,
-    rgba(255, 255, 255, 0.1) 50%,
-    rgba(255, 255, 255, 0.05) 75%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
 }
 
-/* Custom scrollbar */
+/* Figures are read as measurements, so digits must not shift width. */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -58,15 +63,20 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 3px;
+  background: var(--rule-strong);
+  border: 3px solid var(--paper);
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
-}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 
-/* Selection color */
-::selection {
-  background: rgba(0, 100, 255, 0.3);
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
