@@ -5,53 +5,60 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "class",
   theme: {
+    // 다크 단일 테마다. 팔레트를 확장이 아니라 교체해서
+    // Tailwind 기본색(파랑, 보라 등)을 아예 쓸 수 없게 만든다.
+    colors: {
+      transparent: "transparent",
+      current: "currentColor",
+      bg: "var(--bg)",
+      elev: "var(--bg-elev)",
+      text: "var(--text)",
+      dim: "var(--text-dim)",
+      line: "var(--line)",
+      accent: "var(--accent)",
+    },
+    // 스페이싱도 교체한다. DESIGN.md 의 스케일 밖 값은 쓸 수 없다.
+    spacing: {
+      0: "0",
+      1: "4px",
+      2: "8px",
+      4: "16px",
+      6: "24px",
+      10: "40px",
+      16: "64px",
+      30: "120px",
+      50: "200px",
+      full: "100%",
+    },
+    borderRadius: {
+      none: "0",
+      DEFAULT: "0",
+      full: "9999px", // 커서 팔로워 전용
+    },
     extend: {
-      colors: {
-        paper: "var(--paper)",
-        ink: "var(--ink)",
-        body: "var(--ink-body)",
-        meta: "var(--ink-meta)",
-        rule: "var(--rule)",
-        "rule-strong": "var(--rule-strong)",
-        accent: "var(--accent)",
-        "accent-hover": "var(--accent-hover)",
-      },
       fontFamily: {
-        sans: [
-          "'IBM Plex Sans KR'",
-          "'Apple SD Gothic Neo'",
-          "'Malgun Gothic'",
-          "sans-serif",
-        ],
-        mono: ["var(--font-plex-mono)", "ui-monospace", "monospace"],
+        display: ["var(--font-display)"],
+        "display-ko": ["var(--font-display-ko)"],
+        body: ["var(--font-body)"],
+        mono: ["var(--font-mono)"],
       },
-      // Shape lock: this project has exactly one corner radius.
-      // Every scale key resolves to 2px so a stray `rounded-2xl` cannot
-      // reintroduce the card language the redesign removed.
-      borderRadius: {
-        none: "0",
-        DEFAULT: "2px",
-        sm: "2px",
-        md: "2px",
-        lg: "2px",
-        xl: "2px",
-        "2xl": "2px",
-        "3xl": "2px",
-        full: "2px",
+      fontSize: {
+        // DESIGN.md 1.2 의 타입 스케일. 이 밖의 크기는 쓰지 않는다.
+        "display-xl": ["clamp(72px, 14vw, 200px)", { lineHeight: "0.92", letterSpacing: "-0.02em" }],
+        "display-l": ["clamp(40px, 5vw, 72px)", { lineHeight: "1.02", letterSpacing: "-0.015em" }],
+        // 한글 전용 단. 한글 글립은 전각이라 같은 px 에서 라틴보다 훨씬 넓게
+        // 나간다. display-l 을 그대로 쓰면 한 줄이 열 폭을 넘겨 아무 데서나 접힌다.
+        "display-ko": ["clamp(28px, 3.6vw, 52px)", { lineHeight: "1.35", letterSpacing: "-0.02em" }],
+        heading: ["clamp(24px, 2.6vw, 32px)", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
+        body: ["17px", { lineHeight: "1.7" }],
+        caption: ["13px", { lineHeight: "1.5" }],
       },
       maxWidth: {
-        page: "1080px",
-        measure: "68ch",
+        measure: "34em",
       },
-      letterSpacing: {
-        // 0.08em is for short mono labels only (roughly 12 characters or less).
-        // Longer mono runs, and anything with Hangul in it, use `meta`: wide
-        // tracking pulls Korean words apart and slows reading.
-        label: "0.08em",
-        meta: "0.02em",
-        display: "-0.035em",
+      gridTemplateColumns: {
+        12: "repeat(12, minmax(0, 1fr))",
       },
     },
   },

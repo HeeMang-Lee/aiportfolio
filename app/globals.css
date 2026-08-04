@@ -2,56 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Tokens are normative and live in DESIGN.md. Light is the default world;
-   .dark swaps values only, never the strategy. */
+/* 토큰은 DESIGN.md 가 정본이다. 다크 단일 테마이므로 라이트 변형이 없다.
+   순백(#FFF)과 순흑(#000)은 쓰지 않는다. */
 :root {
-  --paper: #fbfbfa;
-  --ink: #16161a;
-  --ink-body: #43434b;
-  --ink-meta: #6e6e78;
-  --rule: #e3e3e0;
-  --rule-strong: #c9c9c4;
-  --accent: #d14424;
-  --accent-hover: #a83519;
-  --selection: rgba(209, 68, 36, 0.16);
-}
-
-.dark {
-  --paper: #111112;
-  --ink: #f2f2f0;
-  --ink-body: #b4b4bc;
-  --ink-meta: #84848e;
-  --rule: #28282c;
-  --rule-strong: #3d3d43;
-  --accent: #ff6a45;
-  --accent-hover: #ff8a6b;
-  --selection: rgba(255, 106, 69, 0.22);
+  --bg: #0a0a0a;
+  --bg-elev: #111111;
+  --text: #edeae4;
+  --text-dim: #8a867e;
+  --line: #2a2a28;
+  --accent: #cc5330;
 }
 
 html {
-  scroll-behavior: smooth;
-  /* Nav is 64px; anchored sections must not land underneath it. */
-  scroll-padding-top: 96px;
+  background: var(--bg);
+  color: var(--text);
+  /* Lenis 가 스크롤을 대신 처리한다. 네이티브 smooth 와 겹치면 어긋난다. */
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--paper);
-  color: var(--ink-body);
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
 }
 
 ::selection {
-  background: var(--selection);
+  background: var(--accent);
+  color: var(--text);
 }
 
 :focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 2px;
+  outline: 1px solid var(--accent);
+  outline-offset: 3px;
 }
 
-/* Figures are read as measurements, so digits must not shift width. */
-.tnum {
-  font-variant-numeric: tabular-nums;
+/* 커서 팔로워를 띄우므로 기본 커서를 숨기되, 포인터 장치가 있을 때만.
+   터치 기기에서 숨기면 아무것도 안 보인다. */
+@media (hover: hover) and (pointer: fine) {
+  .cursor-hidden,
+  .cursor-hidden * {
+    cursor: none;
+  }
+}
+
+/* 줄 단위 마스크 리빌의 공통 래퍼. overflow 를 잘라야 y 이동이 가려진다. */
+.line-mask {
+  overflow: hidden;
+  display: block;
+}
+
+/* 진입 모션이 붙는 요소는 초기 상태를 CSS 로 잡는다.
+   JS 로만 잡으면 하이드레이션 전에 한 번 번쩍인다. */
+.pre-reveal {
+  opacity: 0;
+}
+
+.pre-slice {
+  clip-path: inset(0 0 100% 0);
+}
+
+.pre-line > * {
+  transform: translateY(110%);
+}
+
+/* 모션을 끄면 초기 상태도 함께 풀어야 한다.
+   안 그러면 화면이 빈 채로 남는다. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .pre-reveal {
+    opacity: 1 !important;
+  }
+
+  .pre-slice {
+    clip-path: inset(0) !important;
+  }
+
+  .pre-line > * {
+    transform: none !important;
+  }
 }
 
 ::-webkit-scrollbar {
@@ -63,20 +99,13 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--rule-strong);
-  border: 3px solid var(--paper);
+  background: var(--line);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
+/* 서체 변수. 자체 호스팅한 @font-face 의 family 이름과 맞춘다. */
+:root {
+  --font-display: "Young Serif", "Noto Serif KR", serif;
+  --font-display-ko: "Noto Serif KR", "Young Serif", serif;
+  --font-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
 }

@@ -1,247 +1,234 @@
 ---
 name: 이희망 포트폴리오
-description: 측정된 결과를 사양서처럼 읽히게 만든 백엔드 개발자 포트폴리오
+description: Eladio Dieste의 벽돌 곡면에서 온 어두운 단일체 편집 조판. 스크롤이 시간을 밀어내는 포트폴리오
 colors:
-  paper: "#FBFBFA"
-  ink: "#16161A"
-  ink-body: "#43434B"
-  ink-meta: "#6E6E78"
-  rule: "#E3E3E0"
-  rule-strong: "#C9C9C4"
-  accent: "#D14424"
-  accent-hover: "#A83519"
-  paper-dark: "#111112"
-  ink-dark: "#F2F2F0"
-  ink-body-dark: "#B4B4BC"
-  ink-meta-dark: "#84848E"
-  rule-dark: "#28282C"
-  rule-strong-dark: "#3D3D43"
-  accent-dark: "#FF6A45"
-  accent-hover-dark: "#FF8A6B"
+  bg: "#0A0A0A"
+  bg-elev: "#111111"
+  text: "#EDEAE4"
+  text-dim: "#8A867E"
+  line: "#2A2A28"
+  accent: "#CC5330"
 typography:
-  display:
-    fontFamily: "'IBM Plex Sans KR', 'Apple SD Gothic Neo', sans-serif"
-    fontSize: "clamp(2.75rem, 7vw, 4.5rem)"
-    fontWeight: 600
-    lineHeight: 1.06
-    letterSpacing: "-0.035em"
+  display-xl:
+    fontFamily: "'Young Serif', 'Noto Serif KR', serif"
+    fontSize: "clamp(72px, 14vw, 200px)"
+    fontWeight: 400
+    lineHeight: 0.92
+    letterSpacing: "-0.02em"
+  display-l:
+    fontFamily: "'Young Serif', 'Noto Serif KR', serif"
+    fontSize: "clamp(40px, 5vw, 72px)"
+    fontWeight: 400
+    lineHeight: 1.02
+    letterSpacing: "-0.015em"
+  display-ko:
+    fontFamily: "'Noto Serif KR', serif"
+    fontSize: "clamp(28px, 3.6vw, 52px)"
+    fontWeight: 400
+    lineHeight: 1.35
+    letterSpacing: "-0.02em"
   heading:
     fontFamily: "'IBM Plex Sans KR', 'Apple SD Gothic Neo', sans-serif"
-    fontSize: "clamp(1.5rem, 3vw, 2rem)"
-    fontWeight: 600
+    fontSize: "clamp(24px, 2.6vw, 32px)"
+    fontWeight: 500
     lineHeight: 1.2
-    letterSpacing: "-0.02em"
-  lead:
-    fontFamily: "'IBM Plex Sans KR', 'Apple SD Gothic Neo', sans-serif"
-    fontSize: "18px"
-    fontWeight: 400
-    lineHeight: 1.6
     letterSpacing: "-0.01em"
   body:
     fontFamily: "'IBM Plex Sans KR', 'Apple SD Gothic Neo', sans-serif"
-    fontSize: "15px"
+    fontSize: "17px"
     fontWeight: 400
-    lineHeight: 1.75
+    lineHeight: 1.7
     letterSpacing: "-0.005em"
-  small:
+  caption:
     fontFamily: "'IBM Plex Sans KR', 'Apple SD Gothic Neo', sans-serif"
     fontSize: "13px"
     fontWeight: 400
-    lineHeight: 1.6
-    letterSpacing: "normal"
-  label:
+    lineHeight: 1.5
+    letterSpacing: "0.02em"
+  mono:
     fontFamily: "var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, monospace"
-    fontSize: "11px"
-    fontWeight: 500
-    lineHeight: 1.2
-    letterSpacing: "0.08em"
-  figure:
-    fontFamily: "var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, monospace"
-    fontSize: "22px"
+    fontSize: "13px"
     fontWeight: 400
-    lineHeight: 1.1
-    letterSpacing: "-0.02em"
-  figure-lg:
-    fontFamily: "var(--font-plex-mono), 'IBM Plex Mono', ui-monospace, monospace"
-    fontSize: "28px"
-    fontWeight: 400
-    lineHeight: 1.1
-    letterSpacing: "-0.02em"
+    lineHeight: 1.4
+    letterSpacing: "0.06em"
 rounded:
-  base: "2px"
+  base: "0"
 spacing:
-  hairline: "1px"
   xs: "4px"
   sm: "8px"
   md: "16px"
-  lg: "32px"
-  xl: "64px"
-  section: "112px"
+  lg: "24px"
+  xl: "40px"
+  xxl: "64px"
+  section: "120px"
+  section-lg: "200px"
 components:
-  button-primary:
-    backgroundColor: "{colors.ink}"
-    textColor: "{colors.paper}"
-    rounded: "{rounded.base}"
-    padding: "12px 20px"
-    typography: "{typography.label}"
-  button-primary-hover:
-    backgroundColor: "{colors.accent-hover}"
-    textColor: "{colors.paper}"
-  button-ghost:
+  work-row:
     backgroundColor: "transparent"
-    textColor: "{colors.ink}"
+    borderColor: "{colors.line}"
     rounded: "{rounded.base}"
-    padding: "12px 20px"
-    typography: "{typography.label}"
-  figure-value:
-    textColor: "{colors.ink}"
-    typography: "{typography.figure}"
-  figure-label:
-    textColor: "{colors.ink-meta}"
-    typography: "{typography.label}"
+    textColor: "{colors.text}"
+    typography: "{typography.display-l}"
+  work-row-hover:
+    textColor: "{colors.accent}"
+  meta-label:
+    textColor: "{colors.text-dim}"
+    typography: "{typography.mono}"
+  link-inline:
+    textColor: "{colors.text}"
+    typography: "{typography.body}"
+  link-inline-hover:
+    textColor: "{colors.accent}"
 ---
 
 ## Overview
 
-이 사이트는 **사양서**처럼 읽힌다. 잘 조판된 기술 문서, 계측 리포트, 변경 이력. 마케팅 랜딩이 아니다.
+**Eladio Dieste의 벽돌 곡면.** 무겁고 단일한 재료 하나가 곡선으로 하중을 견디는 구조. 그 인상을 웹으로 옮긴다.
 
-근거: 이 포트폴리오의 핵심 주장은 "AI 산출물을 검수한다"이고, 그 증거는 전부 측정된 숫자다. 숫자를 카드에 담아 장식하면 주장이 약해진다. 괘선과 여백으로만 나눈 문서 조판이 숫자를 가장 신뢰하게 만든다.
+이 사이트는 어두운 단일체다. 배경 하나, 괘선 하나, 액센트 하나. 표면을 나누지 않고 **하나의 연속된 재료 위에 조판**한다. 화면이 바뀌는 게 아니라 같은 벽이 계속 이어진다.
 
-세 개의 다이얼: **variance 6 / motion 4 / density 4.** 비대칭은 쓰되 기교로 가지 않고, 모션은 읽기를 방해하지 않으며, 밀도는 문서에 가깝다.
+세 개의 다이얼: **variance 7 / motion 7 / density 3.** 레이아웃은 과감하게 비대칭이고, 모션은 스크롤과 한 몸이며, 밀도는 낮다 - 여백이 재료의 무게를 만든다.
+
+**이전 버전(밝은 사양서 조판)은 폐기됐다.** 라이트 모드가 없다. 테마 토글도 없다. 단일 재료라는 전제와 충돌하기 때문이다.
 
 ## Colors
 
-한 개의 액센트만 쓴다. **버밀리언 `#D14424`.**
+| 역할 | 값 | 규칙 |
+|---|---|---|
+| 배경 | `#0A0A0A` | 순흑이 아니다. 페이지 전체에서 이 색 하나 |
+| 융기 | `#111111` | 이미지 자리와 스크럽 트랙 바닥에만 |
+| 글자 | `#EDEAE4` | 순백이 아니다. 따뜻한 회백 |
+| 흐린 글자 | `#8A867E` | 대비 5.46:1. 메타와 캡션 전용 |
+| 괘선 | `#2A2A28` | 1px. 유일한 구획 장치 |
+| 액센트 | `#CC5330` | 대비 4.57:1. 아래 네 곳 밖에서는 쓰지 않는다 |
 
-왜 이 색인가. 이 사이트의 서사는 "AI가 낸 결과에 빨간 펜을 대고 방향을 고친다"이다. 버밀리언은 교정 표시와 사양서 주석의 색이다. 이전에 쓰던 `#0064FF`는 토스의 브랜드 색이었고 본인의 색이 아니었다.
+**액센트는 네 곳에만 칠한다.**
 
-| 역할 | 라이트 | 다크 | 비고 |
-|---|---|---|---|
-| 배경 | `#FBFBFA` | `#111112` | 순백과 순검정을 쓰지 않는다 |
-| 제목 | `#16161A` | `#F2F2F0` | |
-| 본문 | `#43434B` | `#B4B4BC` | 대비 9.4:1 / 9.5:1 |
-| 메타 | `#6E6E78` | `#84848E` | 대비 4.9:1 / 5.2:1, 라벨과 기간에만 |
-| 괘선 | `#E3E3E0` | `#28282C` | 1px, 이 사이트의 유일한 구획 장치 |
-| 액센트 | `#D14424` | `#FF6A45` | 대비 4.6:1 / 6.7:1 |
+1. 링크와 작업 행의 **호버**
+2. 타임라인의 **연도 카운터**
+3. **화살표 글리프** (`↓` `→`)
+4. **커서 팔로워**
 
-**액센트 사용 규칙.** 페이지 전체에서 액센트가 칠해지는 곳은 세 종류뿐이다. 개선된 수치의 도착값(`85%`, `0.15초`, `2회`), 본문 안의 외부 링크, 진행 중 상태 표시. 그 밖의 아이콘, 제목, 테두리, 태그에는 절대 쓰지 않는다. 액센트가 흔해지면 숫자가 안 보인다.
+제목, 아이콘, 테두리, 태그, 배지에는 절대 쓰지 않는다. 액센트는 지금 손이 닿아 있는 곳을 가리키는 신호이지 장식이 아니다.
 
-**금지.** 파랑과 보라 계열 전부. 그라데이션 배경. 네온 글로우. 색 있는 배경 위의 회색 본문.
+원안의 `#C4502E` 는 대비가 4.27:1 이라 13px 캡션에서 WCAG AA(4.5:1)에 못 미쳤다.
+색상(hue 13.6)과 채도는 그대로 두고 명도만 2% 올려 4.57:1 로 맞춘 값이 `#CC5330` 이다.
+액센트가 닿는 자리가 전부 13px 캡션이라 큰 글자 예외(3:1)를 쓸 수 없었다.
+
+**금지.** 파랑, 보라 계열 전부. 그라데이션. 글로우. 배경색으로 영역 구분하기. 두 번째 액센트 색.
 
 ## Typography
 
-**IBM Plex Sans KR** + **IBM Plex Mono.**
+세 서체가 각자 하나의 일만 한다. **모두 자체 호스팅한다** (OFL 라이선스).
 
-왜 이 조합인가. Plex는 IBM이 기술 문서를 위해 만든 서체다. 사양서 세계관과 출신이 같다. Plex Sans KR은 한글 글립을 완전히 갖고 있어 한국어 본문의 품질이 유지되고, Plex Mono와 같은 가족이라 숫자와 라벨을 섞어도 조판이 흐트러지지 않는다.
+| 서체 | 라이선스 | 담당 |
+|---|---|---|
+| **Young Serif** | OFL | 영문 디스플레이. 대형 사이즈에서만 |
+| **Noto Serif KR** | OFL | 한글 디스플레이. Young Serif와 짝 |
+| **IBM Plex Sans KR** | OFL | 본문, 제목, 캡션 전부 |
+| **IBM Plex Mono** | OFL | 라틴/숫자 메타 전용 |
 
-**금지 서체.** Inter, Roboto, Geist, Pretendard, 시스템 기본 스택. 앞의 셋은 AI 산출물의 표식이고 Pretendard는 한국 웹의 기본값이라 개성이 남지 않는다.
+**왜 Young Serif인가.** Playfair, Instrument, Fraunces는 지금 웹에서 상위 빈도라 즉시 "요즘 템플릿"으로 읽힌다. Young Serif는 슬랩에 가까운 두꺼운 세리프에 낮은 대비를 가져서, 200px로 키우면 글자가 얇아지지 않고 **덩어리로 남는다.** 벽돌이라는 전제와 맞는 유일한 성질이다.
 
-**타입 램프는 여섯 단이 전부다.** 여기 없는 크기는 쓰지 않는다.
+**한글 디스플레이는 Noto Serif KR.** 한글이 디스플레이 크기로 나오는 자리에서 Sans를 쓰면 영문 세리프와 짝이 안 맞는다. 400 한 굵기만 받는다 - 디스플레이에서 굵기 대비를 만들 이유가 없고, 청크 124개가 이미 무겁다.
+
+### 타입 스케일은 다섯 단이 전부다
 
 | 단 | 지정 | 쓰는 곳 |
 |---|---|---|
-| display | Sans 600 / `clamp(2.75rem, 7vw, 4.5rem)` / `-0.035em` / lh 1.06 | 히어로의 이름 |
-| heading | Sans 600 / `clamp(1.5rem, 3vw, 2rem)` / `-0.02em` | 섹션 제목, 프로젝트 제목 |
-| lead | Sans 400 / **18px** / lh 1.6 | 히어로 도입 문장 |
-| body | Sans 400 / **15px** / lh 1.75 / 최대 `68ch` | 모든 본문 |
-| small | Sans 400 / **13px** / lh 1.6 | 내비게이션, 부가 설명, 푸터 |
-| label | **Mono** 500 / **11px** / `tracking 0.08em` | 라벨, 기간, 태그, 분류 |
-| figure | **Mono** 400 / **22px** / `-0.02em` | 수치의 도착값 |
-| figure-lg | **Mono** 400 / **28px** / `-0.02em` | 히어로 수치 |
+| display-xl | Young Serif / `clamp(72px, 14vw, 200px)` / lh 0.92 | 히어로 이름 |
+| display-l | Young Serif / `clamp(40px, 5vw, 72px)` / lh 1.02 | 작업 제목, 이메일 |
+| display-ko | Noto Serif KR / `clamp(28px, 3.6vw, 52px)` / lh 1.35 | 한글 디스플레이 |
+| heading | Plex Sans 500 / `clamp(24px, 2.6vw, 32px)` | 문단 제목, 수치 도착값 |
+| body | Plex Sans 400 / **17px** / lh 1.7 / 최대 `34em` | 모든 본문 |
+| caption | Plex Sans 400 / **13px** | 메타, 각주, 수치 출발값 |
+
+여기 없는 크기는 쓰지 않는다. 본문 measure는 `34em`을 넘지 않는다 - 낮은 밀도를 유지하려면 줄이 짧아야 한다.
+
+**한글 디스플레이는 영문보다 작은 단을 쓴다.** 한글 글립은 전각이라 같은 px 에서 라틴보다 훨씬 넓게 나간다. `display-l`(72px)을 한글에 그대로 걸면 한 줄이 열 폭을 넘겨 아무 데서나 접힌다. 행간도 1.02가 아니라 1.35다 - 받침이 있는 글자와 없는 글자가 섞이면 1.0 근처에서 줄이 서로 닿는다.
 
 ### Mono는 한글에 절대 쓰지 않는다
 
-이 규칙이 이 사이트에서 가장 자주 어겨지고 가장 눈에 띈다. **IBM Plex Mono에는 한글 글립이 없다.** `font-mono`를 한글에 걸면 두 가지가 동시에 망가진다. 한글만 시스템 폰트로 대체되어 본문과 다른 서체가 되고, 공백은 Mono의 고정폭이라 `측정된  결과`처럼 두 칸 띄운 것처럼 벌어진다.
+**IBM Plex Mono에는 한글 글립이 없다.** `font-mono`를 한글에 걸면 두 가지가 동시에 망가진다. 한글만 시스템 폰트로 대체되어 본문과 다른 서체가 되고, 공백은 Mono의 고정폭이라 `측정된  결과`처럼 두 칸 띄운 것처럼 벌어진다.
 
-- **Mono는 숫자와 라틴 문자 전용이다.** 수치, 기간, 기술 스택, 이메일 주소, 연도, `GitHub`.
-- **한글이 한 글자라도 섞이면 Sans다.** 라벨이든 태그든 예외 없다.
-- 한 줄에 기간과 한글 조직명이 같이 오면 `<span>`을 나눠서 기간만 Mono로 둔다.
-
-### 라벨과 메타
-
-| 역할 | 지정 | 쓰는 곳 |
-|---|---|---|
-| label | 11px / 0.02em / 500 | 열두 글자 이내의 짧은 표식. `상황`, `결과`, `자격증`, `진행중`, 태그 |
-| label-mono | 11px / 0.08em / 500 / **Mono** | 라틴 전용 짧은 표식. `GitHub`, 연도 |
-| meta | 13px / 0.02em | 훑어 읽는 문자열. 기간, 조직명, 기술 스택, 이메일 |
-
-0.08em은 라틴 대문자 라벨에서만 제 역할을 한다. 한글은 자간이 벌어지면 어절 경계가 흐려져 읽는 속도가 떨어지므로 0.02em을 넘기지 않는다. 기술 스택을 11px 좁은 라벨로 두면 표식처럼 보이지만, 실제로는 채용 담당자가 제일 먼저 읽는 줄이라 13px meta로 둔다.
-
-**모든 숫자는 Mono다.** 기간, 커버리지, 대기 시간, 쿼리 횟수, 연도. 예외 없다. 이게 이 사이트의 서명이다.
-
-**강조는 같은 가족 안에서.** 굵기나 색으로 강조하고, 다른 서체를 끼워 넣지 않는다.
+- **Mono는 숫자와 라틴 문자 전용.** 연도, 인덱스(`01`), 기술 스택, 이메일.
+- **한글이 한 글자라도 섞이면 Plex Sans다.** 예외 없다.
+- 숫자에 한글 단위가 붙으면(`0.15초`) 숫자만 `<span>`으로 떼어 Mono로 둔다.
+- 날짜는 `2025년 5월` 대신 `2025.05` - 숫자만 남아 해결된다.
 
 ## Layout
 
-- 콘텐츠 폭 `max-w-[1080px]`, 좌우 패딩 `24px`(모바일) / `40px`(데스크톱).
-- 섹션 간격 `112px`(데스크톱) / `72px`(모바일). 이전의 `py-32` 균일 리듬은 폐기됐다.
-- 본문 measure는 `68ch`를 넘지 않는다.
-- **섹션마다 다른 레이아웃 계열을 쓴다.** 같은 계열이 두 번 나오면 템플릿으로 읽힌다.
+- 12열 그리드. 좌우 패딩 `24px`(모바일) / `64px`(데스크톱).
+- **섹션 세로 간격 `120px` 이상.** 히어로 다음은 `200px`.
+- 스페이싱은 `4 / 8 / 16 / 24 / 40 / 64 / 120 / 200` 여덟 값이 전부다. Tailwind 기본 스케일을 확장이 아니라 **교체**해서 이 밖의 값은 아예 쓸 수 없게 잠갔다.
+- **섹션마다 다른 레이아웃 계열.** 같은 계열이 두 번 나오면 템플릿으로 읽힌다.
 
 | 섹션 | 계열 |
 |---|---|
-| 히어로 | 비대칭 2열. 좌측 이름과 문장, 우측 결과 사양표 |
-| 소개 | 사진 슬롯 + 산문 2열 |
-| AI 협업 | 좌측 거터에 기간, 우측에 원칙 제목과 3단 라벨 문단이 걸리는 세로 목록 |
-| 프로젝트 | 전폭 행. 헤더 + 수치표 + 서술 |
-| 기술 | 2열 정의 목록. 좌측 분류, 우측 나열 |
+| 히어로 | 전폭 디스플레이. 좌하단에 메타 한 줄 |
+| 소개 | 3열 오프셋. 좌측 라벨, 우측 본문이 5열부터 시작 |
+| 작업 | **핀 고정 가로 스크럽.** 아래 참조 |
+| 역량 | 2열 정의 목록 |
+| 연락 | 전폭 디스플레이 링크 |
 
-### 같은 사실은 한 곳에서만 말한다
+### 작업 섹션 - 핀 고정 가로 스크럽
 
-섹션마다 담당이 다르다. 이 경계를 넘으면 같은 문장이 두 번 나온다.
+이 사이트의 중심이다. 섹션이 뷰포트에 고정(pin)된 상태에서 **세로 스크롤이 가로 이동으로 번역**된다. 시간이 왼쪽에서 오른쪽으로 밀려간다.
 
-- **히어로** 대표 수치 세 개. 요약이므로 아래와 겹치는 게 정상이다.
-- **AI 협업** 방법. 어떤 기준을 세웠고 어떻게 다시 지시했는지. **수치를 다시 적지 않는다.**
-- **프로젝트** 엔지니어링. 스택, 프로젝트별 수치, 기술적 판단. **AI 활용 방법을 다시 설명하지 않는다.**
+- 트랙은 프로젝트 3건 + 여는 판 + 닫는 판.
+- 좌상단 **시점 카운터**가 스크럽 진행도에 물려 `2025.05 → 2025.11`로 바뀐다. 액센트.
+  연도만 찍지 않는 이유: 작업 3건이 전부 2025년이라 연도로는 숫자가 움직이지 않는다.
+  움직이는 숫자를 만들려고 없는 연도를 지어내지 않는다.
+- 하단에 진행 막대 1px.
+- **모바일(<768px)에서는 핀을 걸지 않는다.** 세로 목록으로 접힌다. 터치 기기에서 핀+가로 스크럽은 스크롤을 뺏는 것처럼 느껴진다.
 
-원칙을 따로 모은 섹션은 두지 않는다. 타임라인 항목의 제목이 곧 원칙이다. 별도 섹션으로 빼면 같은 이야기의 요약본이 되어 읽는 사람이 두 번 읽게 된다.
+## Motion
 
-**모바일.** 모든 2열은 768px 미만에서 단일 열로 접힌다. 좌측 거터의 기간은 항목 위로 올라간다.
+**모션 스택은 GSAP + ScrollTrigger + Lenis로 통일한다.** `scroll` 이벤트를 직접 리스닝하지 않는다.
+
+이유: Lenis가 스크롤 위치를 자체 루프에서 보간하므로, 네이티브 `scroll` 이벤트로 읽은 값은 실제 렌더 위치와 한 프레임 이상 어긋난다. 두 개의 스크롤 진실이 생기면 핀과 스크럽이 미끄러진다. ScrollTrigger에 Lenis를 물려 **하나의 진실**만 둔다.
+
+| 모션 | 지정 |
+|---|---|
+| 슬라이스 리빌 | `clip-path: inset(0 0 100% 0)` → `inset(0)`, 1.1s, `expo.out` |
+| 줄 마스크 | `overflow:hidden` 래퍼 + `y: 110% → 0`, 0.9s, stagger 0.08 |
+| 스크럽 | `scrub: 1` (1초 지연 추종). `scrub: true`는 너무 딱딱하다 |
+| 커서 | `quickTo` 로 0.4s 추종. 링크 위에서 확대 |
+
+**초기 상태는 CSS로 잡는다** (`.pre-reveal`, `.pre-slice`, `.pre-line`). JS로만 잡으면 하이드레이션 전에 한 번 번쩍인다.
+
+`prefers-reduced-motion: reduce`에서 **초기 상태 클래스까지 함께 푼다.** 트랜지션만 끄면 화면이 빈 채로 남는다. 가로 스크럽은 세로 목록으로 대체한다.
 
 ## Elevation & Depth
 
-**깊이가 없다.** 그림자, 카드, 떠 있는 표면을 쓰지 않는다.
+**깊이가 없다.** 그림자, 카드, 떠 있는 표면, 블러 배경을 쓰지 않는다.
 
-이전 버전은 `rounded-2xl border bg-white` 카드가 15개 이상이었고 AI 협업 섹션은 카드 안에 카드가 들어 있었다. 전부 제거됐다.
-
-위계는 세 가지로만 만든다. **1px 괘선**, **여백**, **타이포 굵기와 크기.** 배경색을 바꿔 영역을 구분하지 않는다. 유일한 예외는 진행 중 항목의 좌측 2px 액센트 세로선이다.
+위계는 세 가지로만 만든다. **1px 괘선**, **여백**, **타입 크기.** `--bg-elev`는 이미지 자리의 빈 바닥을 채우는 용도이지 표면을 띄우는 용도가 아니다.
 
 ## Shapes
 
-**반경은 2px 하나뿐이다.** 버튼, 사진 슬롯, 태그, 포커스 링 전부 동일하다.
+**반경은 0이다.** 벽돌에 둥근 모서리는 없다.
 
-알약(`rounded-full`)과 큰 반경(`rounded-2xl`)은 금지다. 사양서에 둥근 모서리는 없다. 2px는 완전한 직각의 날카로움만 덜어내는 값이다.
-
-## Components
-
-**괘선 구분 행.** 이 사이트의 기본 단위. 항목 사이에 `border-t` 하나만 둔다. 위아래 양쪽에 두지 않는다. 마지막 항목 아래에 닫는 선을 넣지 않는다.
-
-**수치쌍.** `이전 → 이후` 형태. 이전 값은 메타 색, 화살표는 괘선 색, 이후 값은 액센트. 아래에 Mono 라벨. 이 컴포넌트가 히어로와 프로젝트 섹션의 주인공이다.
-
-**라벨.** Mono 11px 대문자. 문단 위에 붙어 그 문단이 무엇인지 알린다(`상황`, `왜 AI를 썼나`, `결과`). 섹션 제목 위에 붙이는 장식용 eyebrow가 아니다. 페이지 전체에서 장식용 eyebrow는 쓰지 않는다.
-
-**버튼.** 기본은 잉크색 채움 + 종이색 글자. 호버에서 액센트로 넘어간다. 유령 버튼은 1px 괘선 테두리. 라벨은 세 단어 이내이고 데스크톱에서 절대 두 줄로 넘어가지 않는다.
-
-**포커스.** `outline: 2px solid accent; outline-offset: 2px`. 제거하지 않는다.
+Tailwind의 `borderRadius`를 교체해서 `rounded-*` 유틸이 전부 `0`을 내도록 잠갔다. 유일한 예외는 커서 팔로워의 `rounded-full` - 원이어야 하는 단 하나의 요소다.
 
 ## Do's and Don'ts
 
 **한다**
 
-- 숫자는 Mono로. 예외 없이.
-- 구획은 1px 괘선과 여백으로.
-- 본문은 `#43434B` / `#B4B4BC`. 대비를 확보한 색이다.
-- 모션은 opacity와 8px 이내의 translate만. `prefers-reduced-motion`에서 즉시 정지.
-- 섹션마다 다른 레이아웃 계열.
+- 배경 하나, 괘선 하나, 액센트 하나로 끝낸다.
+- 큰 타이포와 큰 여백으로 무게를 만든다.
+- 스크롤 진실은 Lenis 하나. ScrollTrigger에 물린다.
+- 숫자와 라틴은 Mono, 한글은 Plex Sans.
+- 모바일에서 핀을 풀고 세로로 접는다.
 
 **하지 않는다**
 
-- 카드. `rounded-2xl border bg-white` 블록을 다시 만들지 않는다. 카드 안의 카드는 더더욱.
-- 알약 배지. 특히 히어로 제목 위의 `rounded-full` 라벨.
+- 라이트 모드, 테마 토글. 단일 재료라는 전제와 충돌한다.
+- 카드, 그림자, 알약 배지, 3등분 카드 그리드.
+- `scroll` 이벤트 직접 리스닝. `window.scrollY` 읽기.
+- 액센트를 제목이나 테두리에 칠하기.
 - 이모지를 아이콘 자리에 쓰기.
-- 튕기는 모션, 무한 반복 모션, 스크롤 유도 화살표.
-- 파랑·보라 그라데이션. `#0064FF`. Inter / Roboto / Geist / Pretendard.
-- 섹션 번호 eyebrow(`01 / INDEX`), 가운뎃점 나열, 버전 라벨, 지역·시각 스트립.
-- 줄표(`—`, `–`). 하이픈만 쓴다.
-- 3등분 카드 그리드.
+- 줄표(`-`, `–`). 하이픈만 쓴다.
+- 섹션 번호 eyebrow, 가운뎃점 나열, 스크롤 유도 화살표의 무한 반복.
 - 없는 수치를 그럴듯하게 만들기. PRODUCT.md의 실측값만 쓴다.
+- **회사 내부 시스템(MES, 탄소배출 등)의 화면 구성이나 프로세스를 싣기.** 보안 문제다. 필요하면 "제조 MES 도메인 경험" 한 줄까지만.
