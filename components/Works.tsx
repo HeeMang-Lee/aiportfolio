@@ -4,12 +4,13 @@ import Image from "next/image";
 import { forwardRef, useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Diagram from "@/components/Diagram";
 import { works, type Work } from "@/content/works";
 
 /** 판 하나가 화면을 옮겨 오는 데 쓰는 시간. */
 const MOVE = 0.8;
-/** 판이 화면 가운데 머물며 상세가 흘러나오는 시간. */
-const DWELL = 2.2;
+/** 상세가 짧아도 최소한 이만큼은 머문다. */
+const MIN_DWELL = 1.2;
 /** 타임라인 1단위를 몇 픽셀 스크롤로 환산할지. */
 const unitPx = () => window.innerHeight * 0.7;
 
@@ -79,14 +80,15 @@ export default function Works() {
         const setFade = list.map((p) => gsap.quickSetter(p, "opacity"));
 
         const tl = gsap.timeline({ defaults: { ease: "none" } });
+        // 각 판의 체류가 타임라인 어디서 시작하는지. 포커스 이동이 이걸 쓴다.
+        const dwellStarts: number[] = [];
 
         list.forEach((panel) => {
           const inner = panel.querySelector<HTMLElement>("[data-stream]");
           const port = panel.querySelector<HTMLElement>("[data-port]");
-          const blocks = panel.querySelectorAll<HTMLElement>("[data-block]");
-
-          // 상세는 처음엔 없다. 스크롤이 하나씩 꺼내 놓는다.
-          gsap.set(blocks, { opacity: 0, y: 24 });
+          const blocks = Array.from(
+            panel.querySelectorAll<HTMLElement>("[data-block]")
+          );
 
           // 이동 - 판이 화면 왼쪽 끝에 맞춰 선다. 판 폭이 100vw 라
           // 왼쪽 끝 정렬이 곧 화면 가운데 정렬이다.
@@ -95,29 +97,43 @@ export default function Works() {
             duration: MOVE,
           });
 
-          // 체류 - 상세 기둥이 위로 흐른다. 이동 거리를 함수로 넘겨서
-          // 내용 길이가 달라져도 같은 스크롤 구간 안에 다 흐르게 한다.
-          if (inner && port) {
-            tl.to(inner, {
-              y: () => -Math.max(0, inner.scrollHeight - port.clientHeight),
-              duration: DWELL,
-            });
-          } else {
-            tl.to({}, { duration: DWELL });
+          const at = tl.duration();
+          dwellStarts.push(at);
+
+          if (!inner || !port) {
+            tl.to({}, { duration: MIN_DWELL });
+            return;
           }
 
-          // 같은 구간에 겹쳐서 블록을 하나씩 띄운다.
-          tl.to(
-            blocks,
-            {
-              opacity: 1,
-              y: 0,
-              duration: 0.45,
-              ease: "power2.out",
-              stagger: { amount: DWELL - 0.45 },
-            },
-            "<"
+          const portH = port.clientHeight;
+          const overflow = Math.max(0, inner.scrollHeight - portH);
+
+          // 블록이 스트림 안에서 어디쯤 있는지 미리 잰다. 초기 상태를 걸기
+          // 전에 재야 y 이동값이 섞이지 않는다.
+          const streamTop = inner.getBoundingClientRect().top;
+          const offsets = blocks.map(
+            (b) => b.getBoundingClientRect().top - streamTop
           );
+
+          // 상세는 처음엔 없다. 스크롤이 하나씩 꺼내 놓는다.
+          gsap.set(blocks, { opacity: 0, y: 24 });
+
+          // 체류 길이를 글 길이에 맞춘다. 고정값으로 두면 긴 글은 날아가고
+          // 짧은 글은 늘어진다. 넘치는 픽셀만큼 스크롤을 쓰면 일반 페이지를
+          // 읽는 것과 같은 속도가 된다.
+          const dwell = Math.max(MIN_DWELL, overflow / unitPx());
+
+          tl.to(inner, { y: () => -overflow, duration: dwell }, at);
+
+          // 블록은 각자 창 아래로 들어오는 시점에 뜬다. 일괄 stagger 로 두면
+          // 블록 높이가 제각각이라 이미 화면에 있는 글이 나중에 뜬다.
+          blocks.forEach((b, i) => {
+            const p =
+              overflow > 0
+                ? Math.min(1, Math.max(0, (offsets[i] - portH * 0.85) / overflow))
+                : 0;
+            tl.to(b, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, at + p * dwell);
+          });
         });
 
         ScrollTrigger.create({
@@ -173,9 +189,8 @@ export default function Works() {
 
           const i = list.indexOf(panel);
           if (i < 0) return;
-          // 그 판의 이동이 끝나는 시점. 체류 구간의 시작이다.
-          const at = (i + 1) * MOVE + i * DWELL;
-          const p = at / tl.duration();
+          // 그 판의 체류가 시작되는 시점. 이동이 막 끝난 자리다.
+          const p = dwellStarts[i] / tl.duration();
           window.scrollTo({ top: st.start + p * (st.end - st.start), behavior: "auto" });
         };
         wrap.addEventListener("focusin", onFocusIn);
@@ -255,56 +270,26 @@ const Panel = forwardRef<HTMLElement, { work: Work }>(function Panel({ work }, r
       data-panel
       className="shrink-0 border-t border-line px-6 pt-10 md:flex md:w-screen md:flex-col md:justify-center md:border-l md:border-t-0 md:px-16 md:pb-16 md:pt-0"
     >
-      <div className="grid gap-10 md:h-[74vh] md:grid-cols-12 md:gap-16">
-        <div className="flex flex-col justify-center md:col-span-5">
+      {/* grid-template-rows 를 명시하지 않으면 단일 행이 auto 로 잡혀 내용만큼
+          늘어난다. 그러면 컨테이너는 78vh 인데 행은 그보다 커져서 자식의
+          h-full 이 78vh 가 아닌 내용 높이를 가리키고 사진이 판 밖으로 넘친다.
+          minmax(0,1fr) 로 행을 컨테이너에 묶고 자식이 줄어들 수 있게 한다. */}
+      <div className="grid gap-10 md:h-[78vh] md:grid-cols-12 md:gap-16 md:[grid-template-rows:minmax(0,1fr)]">
+        {/* 왼쪽 기둥은 신원이다. 무엇을, 언제, 어떤 결과로. 스크롤해도 그대로 있다. */}
+        <div className="flex flex-col justify-center md:col-span-5 md:h-full">
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-caption text-dim">
             <span className="font-mono">{work.index}</span>
             <span className="font-mono">{work.period}</span>
             <span>{work.role}</span>
           </div>
 
-          {/* 고정 비율 상자에 object-cover 로 채우지 않는다. 세 장이 1.5:1 과
-              3:1 로 섞여 있어서 넓은 쪽이 절반 넘게 잘려 나갔다. 원본 비율대로
-              놓고, 크기는 화면 중앙과의 거리가 정한다. */}
-          <Image
-            data-img
-            src={work.image}
-            alt={`${work.title} 화면`}
-            width={work.imageWidth}
-            height={work.imageHeight}
-            sizes="(max-width: 768px) 100vw, 42vw"
-            className="mt-6 h-auto w-full origin-center bg-elev will-change-transform"
-          />
-
-          <div className="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-caption text-dim">
-            {work.stack.map((s) => (
-              <span key={s} className="font-mono">
-                {s}
-              </span>
-            ))}
-            {work.link && (
-              <a
-                href={work.link.href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-text transition-colors hover:text-accent"
-              >
-                <span className="font-mono">{work.link.label}</span>
-                <span aria-hidden className="text-accent">
-                  →
-                </span>
-              </a>
-            )}
-          </div>
-        </div>
-
-        <div className="flex min-h-0 flex-col md:col-span-6 md:col-start-7">
-          <h3 className="font-display text-display-l">{work.title}</h3>
+          {/* 5열(약 520px) 안에 서야 해서 display-l(72px)이 아니라 display-m 이다. */}
+          <h3 className="mt-4 font-display text-display-m">{work.title}</h3>
           <p className="mt-2 text-caption text-dim">{work.kind}</p>
 
           {/* min-w-0 이 없으면 그리드 항목이 콘텐츠 폭만큼 밀려나 옆 칸을 침범한다.
               그리드 항목의 기본 min-width 는 0 이 아니라 auto 다. */}
-          <dl className="mt-10 grid shrink-0 grid-cols-1 gap-6 border-t border-line pt-6 sm:grid-cols-3">
+          <dl className="mt-6 grid grid-cols-1 gap-4 border-t border-line pt-6 sm:grid-cols-3">
             {work.metrics.map((m) => (
               <div key={m.label} className="min-w-0">
                 <dd className="flex flex-wrap items-baseline gap-x-2">
@@ -329,27 +314,68 @@ const Panel = forwardRef<HTMLElement, { work: Work }>(function Panel({ work }, r
             ))}
           </dl>
 
-          {/* 상세가 흐르는 창. 데스크톱에서만 높이를 잘라 기둥을 위로 민다.
-              모바일에서는 그냥 이어지는 글이다. */}
-          <div
-            data-port
-            className="mt-10 md:min-h-0 md:flex-1 md:overflow-hidden md:[mask-image:linear-gradient(to_bottom,transparent,#000_24px,#000_calc(100%-40px),transparent)]"
-          >
-            <div data-stream className="space-y-10 md:will-change-transform">
-              {/* 요약도 흐르는 쪽에 둔다. 고정 영역에 두면 창이 두 블록도
-                  못 담을 만큼 좁아진다. */}
-              <p data-block className="max-w-measure text-body">
-                {work.summary}
-              </p>
-              {work.details.map((d) => (
-                <div key={d.tag} data-block className="max-w-measure">
-                  {/* 액센트를 쓰지 않는다. 20개가 전부 액센트면 신호가 아니라 배경이 된다. */}
-                  <p className="font-mono text-caption text-dim">{d.tag}</p>
-                  <h4 className="mt-2 text-heading">{d.heading}</h4>
-                  <p className="mt-3 text-body text-dim">{d.body}</p>
-                </div>
-              ))}
-            </div>
+          {/* 고정 비율 상자에 object-cover 로 채우지 않는다. 세 장이 1.5:1 과
+              3:1 로 섞여 있어서 넓은 쪽이 절반 넘게 잘려 나갔다. 원본 비율은
+              지키되 남는 높이에 맞춰 줄어들게 둔다 - flex-1 없이 두면 세로가
+              짧은 화면에서 사진이 판 밖으로 넘친다. 크기의 미세 조정은
+              화면 중앙과의 거리가 맡는다. */}
+          <div className="mt-6 md:min-h-0 md:flex-1">
+            <Image
+              data-img
+              src={work.image}
+              alt={`${work.title} 화면`}
+              width={work.imageWidth}
+              height={work.imageHeight}
+              sizes="(max-width: 768px) 100vw, 42vw"
+              className="h-auto w-full origin-left will-change-transform md:h-full md:object-contain md:object-left"
+            />
+          </div>
+
+          <div className="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-caption text-dim">
+            {work.stack.map((s) => (
+              <span key={s} className="font-mono">
+                {s}
+              </span>
+            ))}
+            {work.link && (
+              <a
+                href={work.link.href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-text transition-colors hover:text-accent"
+              >
+                <span className="font-mono">{work.link.label}</span>
+                <span aria-hidden className="text-accent">
+                  →
+                </span>
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* 오른쪽 기둥은 전부 내용이다. 데스크톱에서는 여기만 잘라 위로 민다.
+            모바일에서는 그냥 이어지는 글이다. */}
+        <div
+          data-port
+          className="md:col-span-6 md:col-start-7 md:min-h-0 md:overflow-hidden md:[mask-image:linear-gradient(to_bottom,transparent,#000_28px,#000_calc(100%-48px),transparent)]"
+        >
+          <div data-stream className="space-y-16 md:will-change-transform">
+            {/* 요약도 흐르는 쪽에 둔다. 고정 영역에 두면 창이 좁아진다. */}
+            <p data-block className="max-w-measure text-body">
+              {work.summary}
+            </p>
+
+            {work.details.map((d) => (
+              <div key={d.tag} data-block className="max-w-measure">
+                {/* 액센트를 쓰지 않는다. 20개가 전부 액센트면 신호가 아니라 배경이 된다. */}
+                <p className="font-mono text-caption text-dim">{d.tag}</p>
+                <h4 className="mt-3 text-heading">{d.heading}</h4>
+                {/* 본문은 text-dim(5.46:1)이 아니라 text 다. 긴 글을 흐린 색으로
+                    두면 읽히지 않는다. 흐린 색은 메타에만 쓴다. */}
+                <p className="mt-4 text-body">{d.body}</p>
+                {d.diagram && <Diagram spec={d.diagram} />}
+              </div>
+            ))}
           </div>
         </div>
       </div>

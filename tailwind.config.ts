@@ -49,6 +49,9 @@ const config: Config = {
         "display-l": ["clamp(40px, 5vw, 72px)", { lineHeight: "1.02", letterSpacing: "-0.015em" }],
         // 한글 전용 단. 한글 글립은 전각이라 같은 px 에서 라틴보다 훨씬 넓게
         // 나간다. display-l 을 그대로 쓰면 한 줄이 열 폭을 넘겨 아무 데서나 접힌다.
+        // 좁은 열에 들어가는 라틴 디스플레이. 작업 판의 제목이 5열(약 520px)
+        // 안에 서야 하는데 display-l(72px)로는 "AI Trade Server" 가 넘친다.
+        "display-m": ["clamp(32px, 3.6vw, 52px)", { lineHeight: "1.05", letterSpacing: "-0.015em" }],
         "display-ko": ["clamp(28px, 3.6vw, 52px)", { lineHeight: "1.35", letterSpacing: "-0.02em" }],
         heading: ["clamp(24px, 2.6vw, 32px)", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
         body: ["17px", { lineHeight: "1.7" }],

@@ -138,6 +138,7 @@ components:
 |---|---|---|
 | display-xl | Young Serif / `clamp(72px, 14vw, 200px)` / lh 0.92 | 히어로 이름 |
 | display-l | Young Serif / `clamp(40px, 5vw, 72px)` / lh 1.02 | 작업 제목, 이메일 |
+| display-m | Young Serif / `clamp(32px, 3.6vw, 52px)` / lh 1.05 | 좁은 열의 작업 제목 |
 | display-ko | Noto Serif KR / `clamp(28px, 3.6vw, 52px)` / lh 1.35 | 한글 디스플레이 |
 | heading | Plex Sans 500 / `clamp(24px, 2.6vw, 32px)` | 문단 제목, 수치 도착값 |
 | body | Plex Sans 400 / **17px** / lh 1.7 / 최대 `34em` | 모든 본문 |
