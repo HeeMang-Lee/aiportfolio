@@ -6,13 +6,26 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { works, type Work } from "@/content/works";
 
+/** 판 하나가 화면을 옮겨 오는 데 쓰는 시간. */
+const MOVE = 0.8;
+/** 판이 화면 가운데 머물며 상세가 흘러나오는 시간. */
+const DWELL = 2.2;
+/** 타임라인 1단위를 몇 픽셀 스크롤로 환산할지. */
+const unitPx = () => window.innerHeight * 0.7;
+
 /**
- * 이 사이트의 중심. 섹션이 뷰포트에 고정된 채로 세로 스크롤이 가로 이동으로
- * 번역된다. 시간이 왼쪽에서 오른쪽으로 밀려간다.
+ * 이 사이트의 중심.
  *
- * 모바일에서는 핀을 걸지 않는다. 터치 기기에서 핀 + 가로 스크럽은 스크롤을
- * 빼앗기는 느낌이라 세로 목록으로 접는다. gsap.matchMedia 가 리사이즈 시
- * 자동으로 되돌린다.
+ * 판이 화면 가운데로 들어오면 거기서 멈춰 서고, 그 동안 스크롤이 상세를
+ * 위로 흘려보낸다. 상세가 다 흐르면 다음 판으로 넘어간다. 이동과 체류를
+ * 번갈아 넣은 하나의 타임라인을 스크롤에 물려서 만든다.
+ *
+ * 사진은 타임라인이 아니라 매 프레임 화면 중앙과의 거리로 크기를 정한다.
+ * 타임라인에 넣으면 이동 구간마다 트윈을 따로 잡아야 하는데, 거리로
+ * 계산하면 구조가 바뀌어도 알아서 맞는다.
+ *
+ * 모바일과 reduced-motion 에서는 핀을 걸지 않는다. 터치 기기에서 핀 + 가로
+ * 스크럽은 스크롤을 빼앗기는 느낌이라 세로 목록으로 접는다.
  */
 export default function Works() {
   const section = useRef<HTMLElement>(null);
@@ -23,47 +36,113 @@ export default function Works() {
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
-
     const mm = gsap.matchMedia();
 
     mm.add(
       {
         pinned: "(min-width: 768px) and (prefers-reduced-motion: no-preference)",
+        stacked: "(max-width: 767px) and (prefers-reduced-motion: no-preference)",
       },
       (ctx) => {
-        if (!ctx.conditions?.pinned) return;
         const el = track.current;
         const wrap = section.current;
         if (!el || !wrap) return;
+        const list = panels.current.filter((p): p is HTMLElement => !!p);
 
-        // 이동 거리는 트랙이 뷰포트보다 얼마나 넘치는지다. 리사이즈로 폭이
-        // 바뀌면 값이 달라지므로 함수로 넘겨 invalidateOnRefresh 가 다시 재게 한다.
-        const distance = () => el.scrollWidth - window.innerWidth;
+        // 세로로 접힌 화면에서는 판이 스스로 화면에 들어올 때 글이 떠오른다.
+        if (ctx.conditions?.stacked) {
+          list.forEach((panel) => {
+            panel.querySelectorAll<HTMLElement>("[data-block]").forEach((b) => {
+              gsap.fromTo(
+                b,
+                { opacity: 0, y: 16 },
+                {
+                  opacity: 1,
+                  y: 0,
+                  duration: 0.7,
+                  ease: "power2.out",
+                  scrollTrigger: { trigger: b, start: "top 88%", once: true },
+                }
+              );
+            });
+          });
+          return;
+        }
+        if (!ctx.conditions?.pinned) return;
 
-        const tween = gsap.to(el, { x: () => -distance(), ease: "none" });
+        const images = list.map((p) => p.querySelector<HTMLElement>("[data-img]"));
+        // quickSetter 는 매 프레임 트윈을 새로 만들지 않는다. onUpdate 에서
+        // gsap.to 를 부르면 트윈이 쌓여 끊긴다.
+        const setScale = images.map((img) =>
+          img ? gsap.quickSetter(img, "scale") : null
+        );
+        const setFade = list.map((p) => gsap.quickSetter(p, "opacity"));
 
-        const st = ScrollTrigger.create({
+        const tl = gsap.timeline({ defaults: { ease: "none" } });
+
+        list.forEach((panel) => {
+          const inner = panel.querySelector<HTMLElement>("[data-stream]");
+          const port = panel.querySelector<HTMLElement>("[data-port]");
+          const blocks = panel.querySelectorAll<HTMLElement>("[data-block]");
+
+          // 상세는 처음엔 없다. 스크롤이 하나씩 꺼내 놓는다.
+          gsap.set(blocks, { opacity: 0, y: 24 });
+
+          // 이동 - 판이 화면 왼쪽 끝에 맞춰 선다. 판 폭이 100vw 라
+          // 왼쪽 끝 정렬이 곧 화면 가운데 정렬이다.
+          tl.to(el, {
+            x: () => -(panel.offsetLeft - el.offsetLeft),
+            duration: MOVE,
+          });
+
+          // 체류 - 상세 기둥이 위로 흐른다. 이동 거리를 함수로 넘겨서
+          // 내용 길이가 달라져도 같은 스크롤 구간 안에 다 흐르게 한다.
+          if (inner && port) {
+            tl.to(inner, {
+              y: () => -Math.max(0, inner.scrollHeight - port.clientHeight),
+              duration: DWELL,
+            });
+          } else {
+            tl.to({}, { duration: DWELL });
+          }
+
+          // 같은 구간에 겹쳐서 블록을 하나씩 띄운다.
+          tl.to(
+            blocks,
+            {
+              opacity: 1,
+              y: 0,
+              duration: 0.45,
+              ease: "power2.out",
+              stagger: { amount: DWELL - 0.45 },
+            },
+            "<"
+          );
+        });
+
+        ScrollTrigger.create({
           trigger: wrap,
           start: "top top",
-          end: () => `+=${distance()}`,
+          end: () => `+=${tl.duration() * unitPx()}`,
           pin: true,
           // scrub:1 은 1초 지연 추종. true 는 스크롤에 딱 붙어 딱딱하다.
           scrub: 1,
-          animation: tween,
+          animation: tl,
           invalidateOnRefresh: true,
           onUpdate: (self) => {
             if (bar.current) bar.current.style.transform = `scaleX(${self.progress})`;
 
-            // 진행도를 3등분해서 인덱스를 뽑으면 여는 판의 폭이 무시돼
-            // 첫 작업이 아직 화면 가운데 있는데도 카운터가 넘어간다. 화면
-            // 중앙에 가장 가까운 판을 직접 재서 고른다. 세 개뿐이라 싸다.
-            const mid = window.innerWidth / 2;
+            const vw = window.innerWidth;
             let best = 0;
             let bestGap = Infinity;
-            panels.current.forEach((p, i) => {
-              if (!p) return;
-              const r = p.getBoundingClientRect();
-              const gap = Math.abs(r.left + r.width / 2 - mid);
+
+            list.forEach((panel, i) => {
+              const r = panel.getBoundingClientRect();
+              const gap = Math.abs(r.left + r.width / 2 - vw / 2);
+              // 화면 하나만큼 떨어지면 0, 정중앙이면 1.
+              const near = Math.max(0, 1 - gap / vw);
+              setScale[i]?.(0.84 + 0.16 * near);
+              setFade[i](0.25 + 0.75 * near);
               if (gap < bestGap) {
                 bestGap = gap;
                 best = i;
@@ -80,27 +159,24 @@ export default function Works() {
 
         // 키보드로 Tab 을 누르면 아직 화면 밖에 있는 판의 링크로 포커스가 간다.
         // 브라우저는 그걸 보여주려고 조상 요소를 스크롤하는데, 트랙은 transform
-        // 으로 움직이고 있어서 그 스크롤이 정렬을 깨뜨린다. 대신 포커스가 들어온
-        // 판이 화면에 들어오는 세로 스크롤 위치를 직접 계산해서 그리로 보낸다.
+        // 으로 움직이고 있어서 그 스크롤이 정렬을 깨뜨린다. 대신 그 판이 화면에
+        // 들어오는 세로 위치를 직접 계산해서 그리로 보낸다.
+        const st = ScrollTrigger.getAll().find((t) => t.trigger === wrap);
         const onFocusIn = (e: FocusEvent) => {
           const target = e.target;
           if (!(target instanceof Element)) return;
           const panel = target.closest("[data-panel]");
-          if (!(panel instanceof HTMLElement)) return;
+          if (!(panel instanceof HTMLElement) || !st) return;
 
-          // 브라우저가 이미 밀어 놓은 스크롤을 되돌린다.
           el.scrollLeft = 0;
           wrap.scrollLeft = 0;
 
-          const d = distance();
-          if (d <= 0) return;
-          // offsetLeft 는 transform 의 영향을 받지 않는 레이아웃 좌표라
-          // 스크럽이 어디까지 갔든 같은 값이 나온다.
-          const progress = Math.min(1, Math.max(0, panel.offsetLeft / d));
-          window.scrollTo({
-            top: st.start + progress * (st.end - st.start),
-            behavior: "auto",
-          });
+          const i = list.indexOf(panel);
+          if (i < 0) return;
+          // 그 판의 이동이 끝나는 시점. 체류 구간의 시작이다.
+          const at = (i + 1) * MOVE + i * DWELL;
+          const p = at / tl.duration();
+          window.scrollTo({ top: st.start + p * (st.end - st.start), behavior: "auto" });
         };
         wrap.addEventListener("focusin", onFocusIn);
 
@@ -122,14 +198,19 @@ export default function Works() {
     <section id="works" ref={section} className="relative overflow-hidden">
       <div
         ref={track}
-        className="flex flex-col gap-30 px-6 py-30 md:h-screen md:flex-row md:items-center md:gap-0 md:px-0 md:py-0"
+        className="flex flex-col gap-30 py-30 md:h-screen md:flex-row md:items-stretch md:gap-0 md:py-0"
       >
-        {/* 여는 판. 가로 트랙이 곧바로 첫 작업으로 시작하면 머리글과 겹친다. */}
-        <div className="shrink-0 md:flex md:h-full md:w-[46vw] md:flex-col md:justify-center md:pl-16 md:pr-10">
+        {/* 여는 판. 가로 트랙이 곧바로 첫 작업으로 시작하면 들어서는 느낌이 없다. */}
+        <div className="shrink-0 px-6 md:flex md:w-screen md:flex-col md:justify-center md:px-16">
           <p className="max-w-measure text-body text-dim">
-            세 건 모두 <span className="text-text">부하 테스트나 계측으로 문제를 먼저 확인하고</span>{" "}
+            세 건 모두{" "}
+            <span className="text-text">부하 테스트나 계측으로 문제를 먼저 확인하고</span>{" "}
             구조를 바꾼 뒤 같은 방법으로 다시 잰 기록입니다. 아래 숫자는 전부
             실측값입니다.
+          </p>
+          <p className="mt-10 max-w-measure text-caption text-dim">
+            판이 가운데 서면 그 프로젝트의 트러블슈팅이 차례로 흘러나옵니다.
+            계속 내리면 다음 프로젝트로 넘어갑니다.
           </p>
         </div>
 
@@ -142,10 +223,6 @@ export default function Works() {
             }}
           />
         ))}
-
-        {/* 닫는 판. 이게 없으면 마지막 작업이 화면 오른쪽 끝에 붙은 채로
-            트랙이 끝나 한 번도 가운데에 서지 못한다. */}
-        <div className="hidden shrink-0 md:block md:w-[30vw]" aria-hidden />
       </div>
 
       {/* 상태 띠. 섹션 제목과 시점 카운터, 진행 막대를 화면 아래에 모은다.
@@ -176,38 +253,58 @@ const Panel = forwardRef<HTMLElement, { work: Work }>(function Panel({ work }, r
     <article
       ref={ref}
       data-panel
-      className="shrink-0 border-t border-line pt-6 md:flex md:h-full md:w-[76vw] md:flex-col md:justify-center md:border-l md:border-t-0 md:px-16 md:pb-16 md:pt-0"
+      className="shrink-0 border-t border-line px-6 pt-10 md:flex md:w-screen md:flex-col md:justify-center md:border-l md:border-t-0 md:px-16 md:pb-16 md:pt-0"
     >
-      <div className="grid gap-10 md:grid-cols-12 md:items-center">
-        <div className="md:col-span-5">
-          {/* 고정 비율 상자에 object-cover 로 채우지 않는다. 세 장이 1.5:1 과
-              3:1 로 섞여 있어서 넓은 쪽이 절반 넘게 잘려 나갔다. 원본 비율대로
-              열 폭에 맞춰 놓는다. 판이 세로 가운데 정렬이라 높이가 달라도 된다. */}
-          <Image
-            src={work.image}
-            alt={`${work.title} 화면`}
-            width={work.imageWidth}
-            height={work.imageHeight}
-            sizes="(max-width: 768px) 100vw, 32vw"
-            className="h-auto w-full bg-elev"
-          />
-        </div>
-
-        <div className="md:col-span-7">
-          <div className="flex items-baseline gap-4 text-caption text-dim">
+      <div className="grid gap-10 md:h-[74vh] md:grid-cols-12 md:gap-16">
+        <div className="flex flex-col justify-center md:col-span-5">
+          <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-caption text-dim">
             <span className="font-mono">{work.index}</span>
             <span className="font-mono">{work.period}</span>
             <span>{work.role}</span>
           </div>
 
-          <h3 className="mt-4 font-display text-display-l">{work.title}</h3>
-          <p className="mt-2 text-caption text-dim">{work.kind}</p>
+          {/* 고정 비율 상자에 object-cover 로 채우지 않는다. 세 장이 1.5:1 과
+              3:1 로 섞여 있어서 넓은 쪽이 절반 넘게 잘려 나갔다. 원본 비율대로
+              놓고, 크기는 화면 중앙과의 거리가 정한다. */}
+          <Image
+            data-img
+            src={work.image}
+            alt={`${work.title} 화면`}
+            width={work.imageWidth}
+            height={work.imageHeight}
+            sizes="(max-width: 768px) 100vw, 42vw"
+            className="mt-6 h-auto w-full origin-center bg-elev will-change-transform"
+          />
 
-          <p className="mt-6 max-w-measure text-body text-dim">{work.summary}</p>
+          <div className="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-caption text-dim">
+            {work.stack.map((s) => (
+              <span key={s} className="font-mono">
+                {s}
+              </span>
+            ))}
+            {work.link && (
+              <a
+                href={work.link.href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-text transition-colors hover:text-accent"
+              >
+                <span className="font-mono">{work.link.label}</span>
+                <span aria-hidden className="text-accent">
+                  →
+                </span>
+              </a>
+            )}
+          </div>
+        </div>
+
+        <div className="flex min-h-0 flex-col md:col-span-6 md:col-start-7">
+          <h3 className="font-display text-display-l">{work.title}</h3>
+          <p className="mt-2 text-caption text-dim">{work.kind}</p>
 
           {/* min-w-0 이 없으면 그리드 항목이 콘텐츠 폭만큼 밀려나 옆 칸을 침범한다.
               그리드 항목의 기본 min-width 는 0 이 아니라 auto 다. */}
-          <dl className="mt-10 grid grid-cols-1 gap-6 border-t border-line pt-6 sm:grid-cols-3">
+          <dl className="mt-10 grid shrink-0 grid-cols-1 gap-6 border-t border-line pt-6 sm:grid-cols-3">
             {work.metrics.map((m) => (
               <div key={m.label} className="min-w-0">
                 <dd className="flex flex-wrap items-baseline gap-x-2">
@@ -232,26 +329,27 @@ const Panel = forwardRef<HTMLElement, { work: Work }>(function Panel({ work }, r
             ))}
           </dl>
 
-          {/* 스택과 링크를 한 줄에 둔다. 따로 쌓으면 판이 세로로 넘친다. */}
-          <div className="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-caption text-dim">
-            {work.stack.map((s) => (
-              <span key={s} className="font-mono">
-                {s}
-              </span>
-            ))}
-            {work.link && (
-              <a
-                href={work.link.href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-text transition-colors hover:text-accent"
-              >
-                <span className="font-mono">{work.link.label}</span>
-                <span aria-hidden className="text-accent">
-                  →
-                </span>
-              </a>
-            )}
+          {/* 상세가 흐르는 창. 데스크톱에서만 높이를 잘라 기둥을 위로 민다.
+              모바일에서는 그냥 이어지는 글이다. */}
+          <div
+            data-port
+            className="mt-10 md:min-h-0 md:flex-1 md:overflow-hidden md:[mask-image:linear-gradient(to_bottom,transparent,#000_24px,#000_calc(100%-40px),transparent)]"
+          >
+            <div data-stream className="space-y-10 md:will-change-transform">
+              {/* 요약도 흐르는 쪽에 둔다. 고정 영역에 두면 창이 두 블록도
+                  못 담을 만큼 좁아진다. */}
+              <p data-block className="max-w-measure text-body">
+                {work.summary}
+              </p>
+              {work.details.map((d) => (
+                <div key={d.tag} data-block className="max-w-measure">
+                  {/* 액센트를 쓰지 않는다. 20개가 전부 액센트면 신호가 아니라 배경이 된다. */}
+                  <p className="font-mono text-caption text-dim">{d.tag}</p>
+                  <h4 className="mt-2 text-heading">{d.heading}</h4>
+                  <p className="mt-3 text-body text-dim">{d.body}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
