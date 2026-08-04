@@ -11,6 +11,10 @@ import { works, type Work } from "@/content/works";
 const MOVE = 0.8;
 /** 상세가 짧아도 최소한 이만큼은 머문다. */
 const MIN_DWELL = 1.2;
+/** 상세가 다 흐른 뒤 멈춰 서는 시간. 마지막 블록을 읽을 자리다.
+ *  이게 없으면 마지막 블록은 체류가 끝나는 순간에야 제자리에 오고
+ *  곧바로 다음 판으로 밀려나서 한 번도 읽히지 않는다. */
+const HOLD = 1.2;
 /** 타임라인 1단위를 몇 픽셀 스크롤로 환산할지. */
 const unitPx = () => window.innerHeight * 0.7;
 
@@ -101,7 +105,7 @@ export default function Works() {
           dwellStarts.push(at);
 
           if (!inner || !port) {
-            tl.to({}, { duration: MIN_DWELL });
+            tl.to({}, { duration: MIN_DWELL + HOLD });
             return;
           }
 
@@ -134,6 +138,9 @@ export default function Works() {
                 : 0;
             tl.to(b, { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }, at + p * dwell);
           });
+
+          // 다 흐른 자리에서 멈춘다. 다음 판으로 넘어가기 전의 숨이기도 하다.
+          tl.to({}, { duration: HOLD }, at + dwell);
         });
 
         ScrollTrigger.create({
@@ -274,18 +281,42 @@ const Panel = forwardRef<HTMLElement, { work: Work }>(function Panel({ work }, r
           늘어난다. 그러면 컨테이너는 78vh 인데 행은 그보다 커져서 자식의
           h-full 이 78vh 가 아닌 내용 높이를 가리키고 사진이 판 밖으로 넘친다.
           minmax(0,1fr) 로 행을 컨테이너에 묶고 자식이 줄어들 수 있게 한다. */}
-      <div className="grid gap-10 md:h-[78vh] md:grid-cols-12 md:gap-16 md:[grid-template-rows:minmax(0,1fr)]">
+      <div className="grid gap-10 md:h-[82vh] md:grid-cols-12 md:gap-16 md:[grid-template-rows:minmax(0,1fr)]">
         {/* 왼쪽 기둥은 신원이다. 무엇을, 언제, 어떤 결과로. 스크롤해도 그대로 있다. */}
         <div className="flex flex-col justify-center md:col-span-5 md:h-full">
+          {/* 메타와 스택을 한 덩어리로 흘린다. 줄을 나누면 그만큼이 그대로
+              사진 높이에서 빠진다. */}
           <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-caption text-dim">
             <span className="font-mono">{work.index}</span>
             <span className="font-mono">{work.period}</span>
             <span>{work.role}</span>
+            <span aria-hidden className="text-line">
+              /
+            </span>
+            {work.stack.map((t) => (
+              <span key={t} className="font-mono">
+                {t}
+              </span>
+            ))}
+            {work.link && (
+              <a
+                href={work.link.href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 text-text transition-colors hover:text-accent"
+              >
+                <span className="font-mono">{work.link.label}</span>
+                <span aria-hidden className="text-accent">
+                  →
+                </span>
+              </a>
+            )}
           </div>
 
           {/* 5열(약 520px) 안에 서야 해서 display-l(72px)이 아니라 display-m 이다. */}
           <h3 className="mt-4 font-display text-display-m">{work.title}</h3>
           <p className="mt-2 text-caption text-dim">{work.kind}</p>
+
 
           {/* min-w-0 이 없으면 그리드 항목이 콘텐츠 폭만큼 밀려나 옆 칸을 침범한다.
               그리드 항목의 기본 min-width 는 0 이 아니라 auto 다. */}
@@ -319,7 +350,7 @@ const Panel = forwardRef<HTMLElement, { work: Work }>(function Panel({ work }, r
               지키되 남는 높이에 맞춰 줄어들게 둔다 - flex-1 없이 두면 세로가
               짧은 화면에서 사진이 판 밖으로 넘친다. 크기의 미세 조정은
               화면 중앙과의 거리가 맡는다. */}
-          <div className="mt-6 md:min-h-0 md:flex-1">
+          <div className="mt-6 flex md:min-h-0 md:flex-1 md:items-start">
             <Image
               data-img
               src={work.image}
@@ -327,30 +358,10 @@ const Panel = forwardRef<HTMLElement, { work: Work }>(function Panel({ work }, r
               width={work.imageWidth}
               height={work.imageHeight}
               sizes="(max-width: 768px) 100vw, 42vw"
-              className="h-auto w-full origin-left will-change-transform md:h-full md:object-contain md:object-left"
+              className="h-auto w-full origin-left object-contain object-left-top will-change-transform md:max-h-full"
             />
           </div>
 
-          <div className="mt-6 flex flex-wrap items-baseline gap-x-6 gap-y-2 text-caption text-dim">
-            {work.stack.map((s) => (
-              <span key={s} className="font-mono">
-                {s}
-              </span>
-            ))}
-            {work.link && (
-              <a
-                href={work.link.href}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-2 text-text transition-colors hover:text-accent"
-              >
-                <span className="font-mono">{work.link.label}</span>
-                <span aria-hidden className="text-accent">
-                  →
-                </span>
-              </a>
-            )}
-          </div>
         </div>
 
         {/* 오른쪽 기둥은 전부 내용이다. 데스크톱에서는 여기만 잘라 위로 민다.
@@ -359,7 +370,7 @@ const Panel = forwardRef<HTMLElement, { work: Work }>(function Panel({ work }, r
           data-port
           className="md:col-span-6 md:col-start-7 md:min-h-0 md:overflow-hidden md:[mask-image:linear-gradient(to_bottom,transparent,#000_28px,#000_calc(100%-48px),transparent)]"
         >
-          <div data-stream className="space-y-16 md:will-change-transform">
+          <div data-stream className="space-y-16 md:pb-16 md:will-change-transform">
             {/* 요약도 흐르는 쪽에 둔다. 고정 영역에 두면 창이 좁아진다. */}
             <p data-block className="max-w-measure text-body">
               {work.summary}
