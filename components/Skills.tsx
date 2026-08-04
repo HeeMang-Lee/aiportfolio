@@ -2,54 +2,57 @@ import Reveal from "@/components/Reveal";
 
 const groups = [
   {
-    title: "Backend",
-    items: ["Java", "Spring Boot", "Spring AI", "JPA / Hibernate", "Python", "FastAPI"],
+    title: "Language & Framework",
+    items: ["Java 17", "Spring Boot", "Spring AI", "JPA / Hibernate", "Python", "FastAPI"],
   },
   {
-    title: "Database & Cache",
-    items: ["MySQL", "TimescaleDB", "Redis Streams", "Redis Caching", "Redisson"],
+    title: "Messaging & Cache",
+    items: ["Kafka", "Redis Streams", "Redis Lua", "Outbox", "DLT", "Redisson"],
   },
   {
-    title: "AI 연동",
-    items: ["Spring AI", "RAG (Chroma VectorDB)", "Claude API", "OpenAI API", "SSE Streaming"],
+    title: "Database",
+    items: ["MySQL", "TimescaleDB", "Chroma VectorDB"],
   },
   {
-    title: "인프라 & 운영",
+    title: "Reliability",
+    items: ["Resilience4j", "Circuit Breaker", "Rate Limiter", "Graceful Shutdown"],
+  },
+  {
+    title: "Infra & Observability",
     items: ["Docker", "Jenkins", "Grafana", "Prometheus", "Loki"],
   },
   {
-    title: "테스트",
-    items: ["JUnit5", "pytest", "K6"],
+    title: "Test",
+    items: ["JUnit5", "pytest", "K6", "Hibernate Statistics"],
   },
 ];
 
+/**
+ * 2열 정의 목록. 항목 사이에 border-t 하나만 두고 마지막 아래를 닫지 않는다.
+ */
 export default function Skills() {
   return (
-    <section id="skills">
-      <div className="mx-auto max-w-page px-6 py-20 md:px-10 md:py-28">
-        <Reveal>
-          <h2 className="text-[clamp(1.5rem,3vw,2rem)] font-semibold leading-[1.2] tracking-[-0.02em] text-ink">
-            기술
-          </h2>
-        </Reveal>
+    <section id="skills" className="px-6 pb-50 md:px-16">
+      <h2 className="text-caption text-dim">
+        <span className="font-mono">Stack</span>
+      </h2>
 
-        <dl className="mt-12">
-          {groups.map((group, i) => (
-            <Reveal key={group.title} delay={i * 0.04}>
-              <div className="grid gap-2 border-t border-rule py-6 md:grid-cols-[180px_1fr] md:gap-10">
-                <dt className="text-[11px] font-medium tracking-meta text-meta md:pt-1">
-                  {group.title}
-                </dt>
-                <dd className="flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-body">
-                  {group.items.map((item) => (
-                    <span key={item}>{item}</span>
-                  ))}
-                </dd>
-              </div>
-            </Reveal>
-          ))}
-        </dl>
-      </div>
+      <dl className="mt-16">
+        {groups.map((group, i) => (
+          <Reveal key={group.title} as="div" mode="fade" delay={i * 0.04}>
+            <div className="grid grid-cols-1 gap-2 border-t border-line py-6 md:grid-cols-12 md:gap-10">
+              <dt className="text-caption text-dim md:col-span-3">
+                <span className="font-mono">{group.title}</span>
+              </dt>
+              <dd className="flex flex-wrap gap-x-6 gap-y-2 text-caption md:col-span-8 md:col-start-5">
+                {group.items.map((item) => (
+                  <span key={item}>{item}</span>
+                ))}
+              </dd>
+            </div>
+          </Reveal>
+        ))}
+      </dl>
     </section>
   );
 }
