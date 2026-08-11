@@ -51,3 +51,6 @@ next-env.d.ts
 * 2.js
 * 2.ts
 * 2.tsx
+
+# 노션 원본 덤프: 프리사인 이미지 URL(만료 토큰)이 섞여 들어와 추적하지 않는다
+docs/notion-source-projects.md
